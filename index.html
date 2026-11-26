@@ -732,20 +732,20 @@ button{font-family:inherit}
         <div class="g">
           <span class="g-lab">스캔</span>
           <span class="g-hearts" aria-hidden="true"><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i></span>
-          <span class="g-val" id="tpScan">18<i> / 30</i></span>
+          <span class="g-val" id="tpScan">0<i> / 30</i></span>
         </div>
         <div class="g">
           <span class="g-lab">초안</span>
           <span class="g-hearts" aria-hidden="true"><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i></span>
-          <span class="g-val" id="tpDraft">9<i> / 15</i></span>
+          <span class="g-val" id="tpDraft">0<i> / 15</i></span>
         </div>
         <div class="g">
           <span class="g-lab">제출</span>
           <span class="g-hearts" aria-hidden="true"><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i></span>
-          <span class="g-val" id="tpSubmit">4<i> / 10</i></span>
+          <span class="g-val" id="tpSubmit">0<i> / 10</i></span>
         </div>
         <div class="stats-foot">
-          <span>✔ 오늘 승인 <b id="statApproved">2</b>건</span>
+          <span>✔ 오늘 승인 <b id="statApproved">0</b>건</span>
           <span>🕒 일 한도 24:00 초기화</span>
         </div>
       </div>
@@ -927,6 +927,7 @@ button{font-family:inherit}
       }
     } catch (e){ apiError = "load_failed"; cards = []; }
     render();
+    if (apiError) renderThroughput({ scan: 0, draft: 0, submit: 0, approved: 0, limits: { scan: 30, draft: 15, submit: 10 } });
     setBoardHint();
     if (apiError === "unauthorized") showToast("세션 토큰이 없어요. 토큰을 발급받은 뒤 다시 열어주세요.");
   }
