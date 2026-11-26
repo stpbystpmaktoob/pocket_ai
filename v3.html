@@ -1576,6 +1576,14 @@ select.field{appearance:none;background-image:linear-gradient(45deg,transparent 
   function stageOf(id){ for(var i=0;i<STAGES.length;i++){ if(STAGES[i].id===id) return STAGES[i]; } return STAGES[0]; }
   function isRisk(c){ return RISK_TYPES.indexOf(c.tag) !== -1; }
   function initial(s){ return String(s||"?").slice(0,1); }
+  function josa(word, pair){
+    var w = String(word || ""), ch = w.charCodeAt(w.length - 1);
+    var jong = (ch - 0xAC00) % 28 !== 0;
+    if(pair === "은는") return w + (jong ? "은" : "는");
+    if(pair === "이가") return w + (jong ? "이" : "가");
+    if(pair === "을를") return w + (jong ? "을" : "를");
+    return w;
+  }
 
   /* ============================================================
      렌더: 보드 · 탭 · 알림 · 통계
@@ -2085,7 +2093,7 @@ select.field{appearance:none;background-image:linear-gradient(45deg,transparent 
         '<div class="task-list">' + list + '</div></section>' +
       '</div>' +
       '<div class="dr-foot"><div class="dr-foot-row">' +
-        '<div class="foot-note">' + esc(ai.name) + '은(는) 사무실에서 걸어 다니며 일해요. 말풍선을 눌러 프로필을 다시 열 수 있어요.</div>' +
+        '<div class="foot-note">' + esc(josa(ai.name, "은는")) + ' 사무실에서 걸어 다니며 일해요. 말풍선을 눌러 프로필을 다시 열 수 있어요.</div>' +
         '<div class="foot-actions">' +
           (ai.mine ? '<button class="btn btn-danger btn-sm" type="button" data-act="ai-delete" data-id="' + esc(ai.id) + '">퇴근시키기</button>' : '') +
           '<button class="btn btn-ghost" type="button" data-act="close">닫기</button>' +
