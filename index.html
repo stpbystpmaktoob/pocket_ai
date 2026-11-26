@@ -712,7 +712,7 @@ button{font-family:inherit}
         <div class="petwrap j">
           <div class="pet" role="img" aria-label="자비스, 관제 담당 AI 비서 캐릭터"></div>
           <span class="pname j">자비스 · 관제</span>
-          <div class="say">검토 끝! <b>승인 4건</b>만 기다리는 중이야 ♡</div>
+          <div class="say" id="petSay">검토 끝! <b>승인 0건</b>만 기다리는 중이야 ♡</div>
         </div>
         <div class="petwrap s">
           <div class="pet" role="img" aria-label="셀린, 실행 담당 AI 비서 캐릭터"></div>
@@ -732,17 +732,17 @@ button{font-family:inherit}
         <div class="g">
           <span class="g-lab">스캔</span>
           <span class="g-hearts" aria-hidden="true"><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i></span>
-          <span class="g-val">18<i> / 30</i></span>
+          <span class="g-val" id="tpScan">18<i> / 30</i></span>
         </div>
         <div class="g">
           <span class="g-lab">초안</span>
           <span class="g-hearts" aria-hidden="true"><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i></span>
-          <span class="g-val">9<i> / 15</i></span>
+          <span class="g-val" id="tpDraft">9<i> / 15</i></span>
         </div>
         <div class="g">
           <span class="g-lab">제출</span>
           <span class="g-hearts" aria-hidden="true"><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i class="on">♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i><i>♥</i></span>
-          <span class="g-val">4<i> / 10</i></span>
+          <span class="g-val" id="tpSubmit">4<i> / 10</i></span>
         </div>
         <div class="stats-foot">
           <span>✔ 오늘 승인 <b id="statApproved">2</b>건</span>
@@ -759,7 +759,7 @@ button{font-family:inherit}
         <div class="board-head">
           <h2>작업실 보드</h2>
           <span class="mini">6단계</span>
-          <span class="hint">카드를 누르면 쪽지가 열려요 ♡</span>
+          <span class="hint" id="boardHint">카드를 누르면 쪽지가 열려요 ♡</span>
         </div>
         <section class="board" id="board" aria-label="작업 흐름 보드"></section>
       </div>
@@ -808,90 +808,11 @@ button{font-family:inherit}
     { id:"done",     idx:"06", label:"완료" }
   ];
 
-  var cards = [
-    {
-      id:"LB-1126-01", stage:"discover", title:"12월 1주 공공기관 기프티콘 설문 후보 4곳 정리",
-      tag:"설문", assignee:"셀린(실행)", due:"11-27 10:00", dueState:"normal", draftMeta:"셀린 · 19:12",
-      draft:"12월 1주차 설문 후보 4곳을 정리했습니다. 후보 확정 후 셀린이 순차 신청합니다.\n\n1) 환경보건포털 — 겨울철 실내공기 만족도 조사 (마감 12-03)\n2) 한강유역환경청 — 수변 이용 만족도 조사 (마감 12-05)\n3) 강화군 — 주민 생활환경 설문 (비회원 본인인증 필요)\n4) 문체부 — 독서 실태 조사 (추첨 3,000명)\n\n③은 SKT 본인인증이 필요해 마크툽님 확인 후에 진행합니다. 경품 규모와 소요 시간은 내부 표에 정리해 두었습니다.",
-      memo:null
-    },
-    {
-      id:"LB-1126-02", stage:"draft", title:"공모주 공지 · 원픽로그 초안",
-      tag:"블로그", assignee:"셀린(실행)", due:"오늘 23:30", dueState:"normal", draftMeta:"셀린 · 20:04",
-      draft:"제목 · [정정] 11월 공모주 청약 일정 안내 — 변경분 반영\n\n지난 11월 18일 안내드린 공모주 청약 일정 가운데 2종목의 청약일이 주관사 공지로 변경되어 다시 정리했습니다.\n\n· A종목 — 청약일 11-25 → 11-27\n· B종목 — 청약일 11-26 → 12-01\n\n변경 사유는 각 주관사 홈페이지 공지사항에서 확인하실 수 있습니다. 기존 글의 일정 표도 같은 내용으로 수정했습니다.\n\n※ 본 글은 정보 제공 목적이며 투자 권유가 아닙니다.",
-      memo:null
-    },
-    {
-      id:"LB-1126-03", stage:"draft", title:"미리캔버스 시즌3 요소 설명문 6종",
-      tag:"디자인", assignee:"셀린(실행)", due:"11-28", dueState:"normal", draftMeta:"셀린 · 19:48",
-      draft:"요소 6종 설명문 (디자인허브 등록용, 각 80자 이내)\n\n1) 크리스마스 리본 세트 — 1600px PNG, 투명 배경. 카드뉴스·상세페이지 장식용.\n2) 겨울 원목 프레임 — 따뜻한 우드 톤 테두리, 인물 사진 액자에 적합.\n3) 눈 내린 창문 — 실내 배경 위에 겹쳐 쓰는 반투명 창문.\n4) 산타 모자 아이콘 — 3색 세트, 썸네일 강조용.\n5) 연말 리본 배지 — 원형 배지 3종, 이벤트 문구와 조합.\n6) 촛불 클러스터 — 저녁 분위기 배경 요소.\n\n모두 상업적 이용 가능 라이선스로 등록합니다.",
-      memo:null
-    },
-    {
-      id:"LB-1126-04", stage:"review", title:"스레드 3종 카피 세트 (A/B)",
-      tag:"스레드", assignee:"자비스(관제)", due:"오늘 21:00", dueState:"urgent", draftMeta:"셀린 · 20:10",
-      draft:"A안 · 3개월 만에 홈페이지 문의가 4배가 된 이유\n① 첫 화면에 한 줄 약속만 남겼습니다. ② 상담 버튼을 두 개로 줄였습니다. ③ 후기 대신 작업 과정을 올렸습니다. 같은 내용을 정리해 두었으니 필요하시면 댓글 남겨 주세요.\n\nB안 · 홈페이지, 만들고 나서가 더 어렵습니다.\n수정 요청이 올 때마다 견적이 새로 나오면 운영이 흔들립니다. 월 단위로 미리 정해 두면 달라집니다. 자세한 기준은 프로필 링크에 정리했습니다.\n\nC안 · 외주 견적, 이 세 가지만 확인하세요.\n범위·일정·수정 횟수. 이 셋이 비어 있으면 나중에 비용이 붙습니다. 체크리스트는 링크에 있습니다.",
-      memo:"검토 중입니다.\n\n1) A안 첫 문장의 “4배”에 출처가 없습니다. 원픽로그 실측 수치로 바꾸거나 표현을 빼 주세요.\n2) B안은 마지막 CTA가 두 번 반복됩니다. 뒤 문장을 삭제하는 편이 좋습니다.\n3) C안은 그대로 사용 가능합니다.\n\n두 건 수정 반영되면 승인 대기로 올리겠습니다.",
-      memoMeta:"자비스(관제) · 20:22 검토 중"
-    },
-    {
-      id:"LB-1126-05", stage:"approve", title:"아임웹 신규 견적 계약서 발송",
-      tag:"계약", assignee:"자비스(관제)", due:"11-27 10:00", dueState:"normal", draftMeta:"셀린 · 18:32",
-      draft:"수신 · 홍대위드유공인중개사 담당자님\n제목 · [MAKTOOB LAB] 홈페이지 리뉴얼 견적 및 계약 안내\n\n안녕하세요, 마크툽랩 마크툽입니다.\n요청하신 홈페이지 리뉴얼 건의 최종 견적을 아래와 같이 안내드립니다.\n\n· 작업 범위 — 메인 1p + 서브 3p, 모바일 대응, 예약·문의 폼\n· 금액 — 1,850,000원 (부가세 포함)\n· 일정 — 착수 후 14영업일 (12-01 착수 시 12-19 납품 예정)\n· 결제 — 착수금 50% / 납품 확인 후 50%\n\n계약서 원본을 첨부로 함께 보내드립니다. 서명 후 회신 부탁드립니다.\n감사합니다. 마크툽 드림",
-      memo:"검토 완료. 금액과 일정 표기를 부가세 포함 기준으로 통일했습니다.\n\n· 상대 상호와 담당자 성함은 발송 직전 한 번 더 확인이 필요합니다.\n· 첨부 계약서 3p, 서명란 정상.\n\n외부 발송 건이므로 승인 후에만 메일이 나갑니다.",
-      memoMeta:"자비스(관제) · 20:22 검토 완료",
-      consentDetail:"상대 · 홍대위드유공인중개사 / 금액 1,850,000원(부가세 포함) / 발송 즉시 상대방에게 서명 요청 메일이 전달됩니다."
-    },
-    {
-      id:"LB-1126-06", stage:"approve", title:"마크툽랩 통신판매업 신고 서류 제출",
-      tag:"사업자 등록", assignee:"셀린(실행)", due:"11-27 14:00", dueState:"normal", draftMeta:"셀린 · 17:55",
-      draft:"제출처 · 관할 세무서 (마포·홍대)\n신고 항목 · 통신판매업 신고\n\n· 상호 — 마크툽랩\n· 대표 — 마크툽\n· 사업장 주소 — 사업자등록증 사본과 동일\n· 판매 방식 — 전자상거래(홈페이지 제작·디지털 에셋)\n· 사업자등록번호 공개 — 동의\n\n첨부 · 사업자등록증 사본 1부, 신분증 사본 1부, 통신판매업 신고서 1부.\n제출 후 접수번호를 받아 카드에 기록합니다.",
-      memo:"검토 완료. 사업장 주소·연락처가 사업자등록증 사본과 일치합니다.\n\n신고가 완료되면 사업자등록번호가 공개됩니다. 홈페이지 하단 표기 문구도 함께 갱신해야 합니다.",
-      memoMeta:"자비스(관제) · 20:05 검토 완료",
-      consentDetail:"마크툽랩 · 통신판매업 신고 / 관할 세무서 제출 후 사업자등록번호가 공개됩니다."
-    },
-    {
-      id:"LB-1126-07", stage:"approve", title:"미리캔버스 유료 에셋 라이선스 결제",
-      tag:"결제", assignee:"셀린(실행)", due:"오늘 23:00", dueState:"urgent", draftMeta:"셀린 · 19:20",
-      draft:"상품 · 미리캔버스 디자인허브 상업용 라이선스 (월 구독)\n금액 · 29,000원 / 월 (부가세 포함)\n결제수단 · 등록된 카드 (끝 4자리 4821)\n다음 결제일 · 12-26\n\n무료 라이선스는 요소 재판매가 허용되지 않아, 시즌3 6종 등록 전에 유료로 전환합니다. 12월 판매 실적을 보고 유지 여부를 다시 판단하면 됩니다.",
-      memo:"검토 완료. 무료 라이선스로는 디자인허브 판매가 불가해 유료 전환이 필요합니다.\n\n월 구독이므로 12월 말 실적 확인 후 유지·해지를 결정하시면 됩니다.",
-      memoMeta:"자비스(관제) · 19:42 검토 완료",
-      consentDetail:"29,000원이 등록된 카드(끝 4자리 4821)로 즉시 결제되고, 12-26에 자동 갱신됩니다."
-    },
-    {
-      id:"LB-1126-08", stage:"approve", title:"원픽로그 프로필 소개 문구 변경",
-      tag:"프로필 변경", assignee:"셀린(실행)", due:"11-28", dueState:"normal", draftMeta:"셀린 · 20:31",
-      draft:"현재 문구\n네이버 블로그 · 홈페이지 제작 · 마크툽랩\n\n변경 문구\n홈페이지 제작부터 운영까지, 마크툽랩이 함께합니다. 상담은 프로필 하단 링크로.\n\n변경 위치 · 원픽로그 프로필 상단 소개 영역 (42자)\n이전 문구는 보관되어 언제든 되돌릴 수 있습니다.",
-      memo:"검토 완료. 변경 문구 42자로 프로필 노출 영역에서 잘리지 않습니다.\n\n이전 문구는 보관되며 되돌리기 가능합니다.",
-      memoMeta:"자비스(관제) · 20:36 검토 완료",
-      consentDetail:"원픽로그 프로필 소개 문구가 방문자에게 즉시 노출됩니다. 이전 문구는 보관되어 되돌릴 수 있습니다."
-    },
-    {
-      id:"LB-1126-09", stage:"run", title:"당근 비즈프로필 12월 공지 예약 발행",
-      tag:"당근", assignee:"셀린(실행)", due:"11-27 09:00", dueState:"normal", draftMeta:"셀린 · 19:58",
-      draft:"12월 예약·문의 가능 시간 안내\n\n· 예약 상담 — 평일 10:00 ~ 18:00 (12:00 ~ 13:00 제외)\n· 급한 수정 요청 — 카카오톡 채널로 남겨 주시면 순서대로 확인합니다.\n· 연말 작업 마감 — 12-20까지 접수된 건에 한해 12월 내 납품 가능합니다.\n\n12월 1일 09:00 예약 발행으로 걸어 두었습니다.",
-      memo:"검토 완료. 예약 발행 시각과 공지 문구 확인했습니다. 12-20 마감 기준은 실제 일정과 일치합니다.",
-      memoMeta:"자비스(관제) · 20:09 검토 완료",
-      approval:{ by:"마크툽 (@makeutub9)", at:"2026-11-26 20:12:03" }
-    },
-    {
-      id:"LB-1126-10", stage:"done", title:"홍대위드유 외주 제안서 발송",
-      tag:"외주", assignee:"자비스(관제)", due:"완료", dueState:"done", draftMeta:"셀린 · 13:40",
-      draft:"수신 · 홍대위드유공인중개사 담당자님\n제목 · 홈페이지 리뉴얼 제안서 (작업 범위·일정·비용)\n\n요청 주신 내용을 기준으로 제안서를 정리했습니다.\n\n· 현재 사이트 진단 3가지\n· 리뉴얼 범위 — 메인 1p + 서브 3p, 예약·문의 폼\n· 일정 — 착수 후 14영업일\n· 비용 — 별도 견적서로 안내\n\n첨부 · 제안서 PDF, 포트폴리오 2종, 작업 일정표.",
-      memo:"검토 완료. 첨부 3종 확인했고, 상대 상호 표기 일치합니다. 발송 후 회신 대기 상태입니다.",
-      memoMeta:"자비스(관제) · 14:28 검토 완료",
-      approval:{ by:"마크툽 (@makeutub9)", at:"2026-11-26 14:32:11" },
-      completedAt:"2026-11-26 15:04:22"
-    }
-  ];
+  var API_BASE = "https://pocket-ai-api.stpbystp-maktoob.workers.dev";
+  var cards = [];
+  var apiError = "";
 
-  var notifications = [
-    { id:"n1", kind:"승인 요청", tone:"info", cardId:"LB-1126-08", text:"원픽로그 프로필 소개 문구 변경", meta:"셀린(실행) · 승인 대기", time:"20:36", unread:true },
-    { id:"n2", kind:"마감 임박", tone:"warn", cardId:"LB-1126-04", text:"스레드 3종 카피 세트 — 21:00 마감", meta:"자비스(관제) · 24분 남음", time:"20:31", unread:true },
-    { id:"n3", kind:"검토 완료", tone:"ok", cardId:"LB-1126-05", text:"아임웹 신규 견적 계약서 발송 · 승인 대기로 이동", meta:"자비스(관제) 검토 완료", time:"20:22", unread:true },
-    { id:"n4", kind:"승인 완료", tone:"ok", cardId:"LB-1126-09", text:"당근 비즈프로필 12월 공지 예약 발행", meta:"마크툽 (@makeutub9)", time:"20:12", unread:false },
-    { id:"n5", kind:"완료", tone:"info", cardId:"LB-1126-10", text:"홍대위드유 외주 제안서 발송", meta:"자비스(관제) · 15:04:22", time:"15:04", unread:false }
-  ];
+  var notifications = [];
 
   var state = {
     activeStage: "approve",
@@ -921,20 +842,120 @@ button{font-family:inherit}
   function nameOf(c){ return c.assignee.split("(")[0]; }
   function roleOf(c){ return (c.assignee.split("(")[1]||"").replace(")",""); }
 
+  /* ---------- API 연동 ---------- */
+  var AI_ASSIGNEE = {
+    "자비스": "자비스(관제)", "셀린": "셀린(실행)", "피클": "셀린(실행)",
+    "인스팅크": "인스팅크(수주)", "큐": "큐(조사)", "클로드코드": "클로드코드(제작)"
+  };
+  var CONSENT_DETAIL = {
+    "프로필 변경": "프로필 문구가 방문자에게 즉시 노출됩니다. 이전 문구는 보관되어 되돌릴 수 있습니다.",
+    "결제": "결제가 즉시 진행되고, 구독인 경우 자동 갱신될 수 있습니다.",
+    "사업자 등록": "신고가 완료되면 사업자등록번호가 공개될 수 있습니다.",
+    "계약": "발송 즉시 상대방에게 서명 요청이 전달될 수 있습니다."
+  };
+  function sessionToken(){ try { return sessionStorage.getItem("pocket_session") || ""; } catch (e){ return ""; } }
+  function apiHeaders(){
+    var h = { "Content-Type": "application/json" };
+    var t = sessionToken();
+    if (t) h["X-Session-Token"] = t;
+    return h;
+  }
+  function isTodayKST(due){
+    if (!due) return false;
+    if (due.indexOf("오늘") === 0) return true;
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(due);
+    if (!m) return false;
+    var now = new Date(Date.now() + (9*60 + new Date().getTimezoneOffset())*60000);
+    return Number(m[1]) === now.getFullYear() && Number(m[2]) === now.getMonth()+1 && Number(m[3]) === now.getDate();
+  }
+  function normalizeCard(c){
+    var ai = c.ai || "";
+    var assignee = c.assignee || AI_ASSIGNEE[ai] || (ai ? ai + "(담당)" : "자비스(관제)");
+    var memo = (c.review !== undefined ? c.review : c.memo) || null;
+    return {
+      id: c.id, stage: c.stage, title: c.title || "", tag: c.tag || "",
+      assignee: assignee, due: c.due || "", dueState: isTodayKST(c.due) ? "urgent" : "normal",
+      draftMeta: c.draftMeta || null, draft: c.draft || "",
+      memo: memo, memoMeta: memo ? "자비스(관제) · 검토 완료" : null,
+      approval: c.approval || null, hold: c.hold || null,
+      consentDetail: CONSENT_DETAIL[c.tag] || "",
+      completedAt: c.completedAt || null
+    };
+  }
+  function replaceCard(updated){
+    for (var i=0;i<cards.length;i++){ if (cards[i].id === updated.id){ cards[i] = updated; return; } }
+    cards.push(updated);
+  }
+  function renderThroughput(tp){
+    if (!tp) return;
+    var rows = document.querySelectorAll(".stats .g");
+    var vals = [
+      { v: tp.scan || 0, limit: (tp.limits && tp.limits.scan) || 30, el: $("tpScan") },
+      { v: tp.draft || 0, limit: (tp.limits && tp.limits.draft) || 15, el: $("tpDraft") },
+      { v: tp.submit || 0, limit: (tp.limits && tp.limits.submit) || 10, el: $("tpSubmit") }
+    ];
+    vals.forEach(function(x, idx){
+      if (x.el) x.el.innerHTML = x.v + "<i> / " + x.limit + "</i>";
+      var row = rows[idx];
+      if (row){
+        var hearts = row.querySelectorAll(".g-hearts i");
+        var on = Math.round((x.v / x.limit) * hearts.length);
+        for (var j=0;j<hearts.length;j++){ hearts[j].classList.toggle("on", j < on); }
+      }
+    });
+    $("statApproved").textContent = tp.approved || 0;
+  }
+  function setBoardHint(){
+    var hint = $("boardHint");
+    if (!hint) return;
+    if (apiError === "unauthorized") hint.textContent = "서버에 연결됐어요. 세션 토큰이 없어 카드는 비어 있어요 ♡";
+    else if (apiError) hint.textContent = "서버에서 카드를 불러오지 못했어요. 잠시 뒤 다시 열어주세요.";
+    else hint.textContent = "카드를 누르면 쪽지가 열려요 ♡";
+  }
+  async function loadCards(){
+    apiError = "";
+    try {
+      var res = await fetch(API_BASE + "/api/cards", { headers: apiHeaders() });
+      if (!res.ok){ apiError = res.status === 401 ? "unauthorized" : "load_failed"; cards = []; }
+      else {
+        var data = await res.json();
+        cards = (data.cards || []).map(normalizeCard);
+        try {
+          var tpRes = await fetch(API_BASE + "/api/throughput", { headers: apiHeaders() });
+          if (tpRes.ok) renderThroughput(await tpRes.json());
+        } catch (e2){ /* 처리량은 다음 새로고침 때 다시 시도 */ }
+      }
+    } catch (e){ apiError = "load_failed"; cards = []; }
+    render();
+    setBoardHint();
+    if (apiError === "unauthorized") showToast("세션 토큰이 없어요. 토큰을 발급받은 뒤 다시 열어주세요.");
+  }
+
   /* ---------- 렌더 ---------- */
   var LANE_NOTE = {
     discover: "다음 스캔 <b>06:00</b>",
-    draft: "마감 임박 <b>1건</b>",
-    review: "검토 중 <b>1건</b>",
+    draft: "",
+    review: "",
     approve: "",
-    run: "예약 <b>09:00</b>",
-    done: "오늘 <b>3건</b>"
+    run: "",
+    done: ""
   };
+  function laneNote(s, list){
+    if (s.id === "approve") return "승인 필요 <b>"+list.length+"건</b>";
+    if (s.id === "discover") return LANE_NOTE.discover;
+    if (s.id === "draft"){
+      var urgent = list.filter(function(c){ return c.dueState === "urgent"; }).length;
+      return "마감 임박 <b>"+urgent+"건</b>";
+    }
+    if (s.id === "review") return "검토 중 <b>"+list.length+"건</b>";
+    if (s.id === "run") return "실행 <b>"+list.length+"건</b>";
+    return "오늘 <b>"+list.length+"건</b>";
+  }
 
   function renderBoard(){
     board.innerHTML = STAGES.map(function(s){
       var list = cards.filter(function(c){ return c.stage === s.id; });
-      var note = s.id === "approve" ? "승인 필요 <b>"+list.length+"건</b>" : LANE_NOTE[s.id];
+      var note = laneNote(s, list);
       return '<section class="col'+(s.id===state.activeStage?' is-active':'')+'" data-stage="'+s.id+'" aria-label="'+s.label+'">' +
         '<div class="col-head"><span class="col-idx">'+s.idx+'</span><span class="col-name">'+s.label+'</span>' +
         '<span class="col-count">'+list.length+'</span></div>' +
@@ -944,6 +965,10 @@ button{font-family:inherit}
     }).join("");
     var total = cards.length, waiting = cards.filter(function(c){ return c.stage==="approve"; }).length;
     $("sbCounts").textContent = "총 "+total+"건 · 승인 대기 "+waiting+"건";
+    var petSay = $("petSay");
+    if (petSay) petSay.innerHTML = waiting > 0
+      ? "검토 끝! <b>승인 "+waiting+"건</b>만 기다리는 중이야 ♡"
+      : "지금은 승인 대기 중인 카드가 없어요 ♡";
   }
 
   function cardHTML(c){
@@ -1206,35 +1231,57 @@ button{font-family:inherit}
     syncScrim();
   }
 
-  function approveCurrent(){
+  async function approveCurrent(){
     var c = card(state.drawerId); if (!c || c.stage !== "approve") return;
     if (isRisk(c) && !state.consent[c.id]){ shakeConsent(); return; }
-    var at = fmtNow();
-    c.approval = { by: ACCOUNT.name+" ("+ACCOUNT.handle+")", at: at };
-    c.stage = "run";
-    c.hold = null;
-    state.movedId = c.id;
-    notifications.unshift({
-      id: "n"+Date.now(), kind:"승인 완료", tone:"ok", cardId:c.id,
-      text: c.title + " · 실행 단계로 이동", meta: c.approval.by + " · " + at, time:"방금", unread:true
-    });
-    render(); renderDrawer(); updateClock();
-    showToast("<b>승인 완료!</b> — "+at+" 기록 · 실행 단계로 옮겼어요 ♡");
-    setTimeout(function(){ state.movedId = null; render(); }, 4000);
+    var consentChecked = !isRisk(c) || !!state.consent[c.id];
+    try {
+      var res = await fetch(API_BASE + "/api/cards/" + encodeURIComponent(c.id) + "/approve", {
+        method: "POST", headers: apiHeaders(),
+        body: JSON.stringify({ by: ACCOUNT.name + " (" + ACCOUNT.handle + ")", at: new Date().toISOString(), consentChecked: consentChecked })
+      });
+      if (res.status === 401){ showToast("세션 토큰이 없어요. 토큰을 발급받은 뒤 다시 시도해 주세요."); return; }
+      if (res.status === 403){ showToast("민감한 작업이에요. <b>확인 체크</b>를 해야 승인할 수 있어요."); shakeConsent(); return; }
+      if (!res.ok){ showToast("<b>승인 저장에 실패했어요.</b> 다시 시도해 주세요."); return; }
+      var data = await res.json();
+      var updated = normalizeCard(data.card);
+      var at = (updated.approval && updated.approval.at) || fmtNow();
+      replaceCard(updated);
+      state.movedId = c.id;
+      notifications.unshift({
+        id: "n"+Date.now(), kind:"승인 완료", tone:"ok", cardId:c.id,
+        text: c.title + " · 실행 단계로 이동", meta: (updated.approval ? updated.approval.by : ACCOUNT.name) + " · " + at, time:"방금", unread:true
+      });
+      render(); renderDrawer(); updateClock();
+      showToast("<b>승인 완료!</b> — " + at + " 기록 · 실행 단계로 옮겼어요 ♡");
+      setTimeout(function(){ state.movedId = null; render(); }, 4000);
+    } catch (e){
+      showToast("<b>승인 저장에 실패했어요.</b> 네트워크를 확인하고 다시 시도해 주세요.");
+    }
   }
 
-  function saveHold(reason){
+  async function saveHold(reason){
     var c = card(state.drawerId); if (!c || c.stage !== "approve") return;
     if (reason.length < 2) return;
-    var at = fmtNow();
-    c.hold = { reason: reason, at: at, by: ACCOUNT.name+" ("+ACCOUNT.handle+")" };
-    state.holdOpen = false;
-    notifications.unshift({
-      id:"n"+Date.now(), kind:"보류", tone:"warn", cardId:c.id,
-      text:c.title + " · 보류 처리", meta:c.hold.by + " · " + at, time:"방금", unread:true
-    });
-    render(); renderDrawer();
-    showToast("<b>보류로 기록했어요</b> — 카드는 승인 대기에 그대로 있어요.");
+    try {
+      var res = await fetch(API_BASE + "/api/cards/" + encodeURIComponent(c.id) + "/hold", {
+        method: "POST", headers: apiHeaders(),
+        body: JSON.stringify({ by: ACCOUNT.name + " (" + ACCOUNT.handle + ")", reason: reason })
+      });
+      if (res.status === 401){ showToast("세션 토큰이 없어요. 토큰을 발급받은 뒤 다시 시도해 주세요."); return; }
+      if (!res.ok){ showToast("<b>보류 저장에 실패했어요.</b> 다시 시도해 주세요."); return; }
+      var data = await res.json();
+      replaceCard(normalizeCard(data.card));
+      state.holdOpen = false;
+      notifications.unshift({
+        id:"n"+Date.now(), kind:"보류", tone:"warn", cardId:c.id,
+        text:c.title + " · 보류 처리", meta:ACCOUNT.name + " (" + ACCOUNT.handle + ") · " + fmtNow(), time:"방금", unread:true
+      });
+      render(); renderDrawer();
+      showToast("<b>보류로 기록했어요</b> — 카드는 승인 대기에 그대로 있어요.");
+    } catch (e){
+      showToast("<b>보류 저장에 실패했어요.</b> 네트워크를 확인하고 다시 시도해 주세요.");
+    }
   }
 
   /* ---------- 오버레이 ---------- */
@@ -1337,7 +1384,7 @@ button{font-family:inherit}
     if (!isNarrow() && state.railOpen) closeRail();
   });
 
-  render();
+  loadCards();
   updateClock();
   setInterval(updateClock, 1000);
 })();
