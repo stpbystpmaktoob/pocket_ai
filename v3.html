@@ -1203,7 +1203,7 @@ select.field{appearance:none;background-image:linear-gradient(45deg,transparent 
           </div>
           <div class="rail-list" id="railList"></div>
           <div class="rail-log">
-            <div class="rail-log-head"><h3>승인 로그</h3><span id="logCount">오늘 2건</span></div>
+            <div class="rail-log-head"><h3>승인 로그</h3><span id="logCount">총 2건</span></div>
             <div id="logList"></div>
           </div>
           <div class="rail-foot">승인·보류하면 계정과 시각이 카드에 기록되고, 이 목록에 바로 쌓여요.</div>
@@ -1657,7 +1657,7 @@ select.field{appearance:none;background-image:linear-gradient(45deg,transparent 
         '<div class="log-body"><b>' + esc(c.title) + '</b><span>' + esc(c.approval.by) + ' · ' + stageOf(c.stage).label + '</span></div></div>';
     }).join("");
     $("logList").innerHTML = html || '<div class="log-empty">아직 승인 기록이 없어요 ♡</div>';
-    $("logCount").textContent = "오늘 " + approved.length + "건";
+    $("logCount").textContent = "총 " + approved.length + "건";
     $("statApproved").textContent = approved.filter(function(c){
       return String(c.approval.at).slice(0,10) === todayStr();
     }).length;
