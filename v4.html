@@ -3153,7 +3153,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         '<div class="bigsprite"><span class="sprite ' + esc(ai.av) + '"></span></div>' +
         '<div class="who"><h2 id="drTitle">' + esc(ai.name) + '<span class="role" style="--tone:' + esc(ai.tone || "#E85D88") + '">' + esc(ai.role) + "</span></h2>" +
           '<p class="person">' + esc(ai.person || "사무실에서 열심히 일하는 중이에요.") + "</p>" +
-          '<div class="chipsline"><span>MBTI <b>' + esc(mbtiOf(ai)) + "</b></span><span>·</span><span>출근 <b>" + esc(ai.joined || todayStr()) + "</b></span><span>·</span>" +
+          '<div class="chipsline"><span>MBTI <b>' + esc(mbtiOf(ai)) + "</b></span><span>·</span><span>상태 <b>" + esc(ai.status || "대기") + "</b></span><span>·</span><span>마지막 확인 <b>" + esc(ai.lastCheck || "-") + "</b></span><span>·</span>" +
             '<span>자리 <b>' + esc(ai.desk || "사무실") + "</b></span><span>·</span><span>" + (ai.mine ? "내가 채용한 AI" : "기본 팀원") + "</span></div>" +
         "</div></div>" +
       '<div class="ai-kpi">' +
