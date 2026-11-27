@@ -3852,6 +3852,24 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     }
   }
 
+  async function apiAiReply(bot, room, text){
+    var ctl = new AbortController();
+    var to = setTimeout(function(){ ctl.abort(); }, 15000);
+    try{
+      var res = await fetch(apiBase() + "/api/chat/reply", {
+        method:"POST", headers:makeHeaders(), body:JSON.stringify({ bot:bot, room:room, text:text }), signal:ctl.signal
+      });
+      clearTimeout(to);
+      var data = null;
+      try{ data = await res.json(); }catch(e2){ data = null; }
+      if(res.ok && data && data.reply) return { reply:String(data.reply) };
+      return null;
+    }catch(e){
+      clearTimeout(to);
+      return null;
+    }
+  }
+
   async function apiReq(method, path, body){
     var ctl = new AbortController();
     var to = setTimeout(function(){ ctl.abort(); }, 9000);
@@ -4286,13 +4304,11 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   function botReply(m, targets){
     if(!chat.some(function(x){ return x.id === m.id; })) return;
     var said = [];
-    targets.slice(0, 2).forEach(function(id, i){
-      var ai = aiById(id);
-      if(!ai || !ai.autoReply) return;
+    function postReply(ai, i, text){
       var ts = new Date(Date.now() + i * 1200).toISOString();
       var rm = {
         id:"a" + Date.now() + "-" + i, room:m.room, who:ai.id,
-        text:botLine(ai, m.text), ts:ts, status:null, react:[],
+        text:text, ts:ts, status:null, react:[],
         quote:{ name:ACCOUNT.name, text:m.text.length > 30 ? m.text.slice(0, 30) + "…" : m.text }
       };
       chat.push(rm);
@@ -4310,7 +4326,23 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       }
       ai.lastCheck = nowHM();
       said.push(ai.name);
+    }
+    var jobs = targets.slice(0, 2).map(function(id, i){
+      var ai = aiById(id);
+      if(!ai || !ai.autoReply) return Promise.resolve(null);
+      if(serverReady()){
+        return apiAiReply(ai.id, m.room, m.text).then(function(r){
+          if(r && r.reply){ postReply(ai, i, r.reply); }
+          else { showToast("AI 답변이 안 돼서 기본 문구로 답했어요"); postReply(ai, i, botLine(ai, m.text)); }
+        });
+      }
+      postReply(ai, i, botLine(ai, m.text));
+      return Promise.resolve(null);
     });
+    Promise.all(jobs).then(function(){ finishBotReply(m, said); });
+  }
+
+  function finishBotReply(m, said){
     if(!said.length) return;
     m.status = "답장 완료";
     if(serverReady() && m._srv){
