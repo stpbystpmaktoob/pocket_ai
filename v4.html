@@ -3120,16 +3120,18 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
           '<button class="btn btn-primary' + (canApprove ? "" : " is-off") + '" type="button" data-act="approve" id="approveBtn" aria-disabled="' + (!canApprove) + '"' + (srvOK ? "" : " disabled") + '>승인하고 실행으로</button>' +
         "</div></div>";
     }else if(c.stage === "run"){
-      foot = '<div class="dr-foot-row"><div class="foot-note strong">승인 완료 · 실행 단계에 있어요.</div>' +
-        '<div class="foot-actions"><button class="btn btn-primary" type="button" data-act="complete">실행 완료로</button>' +
+      var srvOKRun = serverReady();
+      foot = '<div class="dr-foot-row"><div class="foot-note ' + (srvOKRun ? "strong" : "warn") + '">' + (srvOKRun ? "승인 완료 · 실행 단계에 있어요." : "데모 모드예요. 완료 처리는 서버에 연결한 뒤에 할 수 있어요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러 주세요.") + '</div>' +
+        '<div class="foot-actions"><button class="btn btn-primary' + (srvOKRun ? "" : " is-off") + '" type="button" data-act="complete"' + (srvOKRun ? "" : " disabled") + '>실행 완료로</button>' +
         '<button class="btn btn-ghost" type="button" data-act="close">닫기</button></div></div>';
     }else if(c.stage === "done"){
       foot = '<div class="dr-foot-row"><div class="foot-note strong">완료된 작업이에요 ♡</div>' +
         '<div class="foot-actions"><button class="btn btn-ghost" type="button" data-act="close">닫기</button></div></div>';
     }else{
-      var prevBtn = idx > 0 ? '<button class="btn btn-ghost btn-sm" type="button" data-act="prev-stage">◀ 이전 단계</button>' : "";
-      var nextBtn = idx < 2 ? '<button class="btn btn-ghost btn-sm" type="button" data-act="next-stage">다음 단계 ▶</button>' : "";
-      foot = '<div class="dr-foot-row"><div class="foot-note">' + st.label + " 단계예요. 승인 대기 단계에서만 승인할 수 있어요.</div>" +
+      var srvOKStage = serverReady();
+      var prevBtn = idx > 0 ? '<button class="btn btn-ghost btn-sm' + (srvOKStage ? "" : " is-off") + '" type="button" data-act="prev-stage"' + (srvOKStage ? "" : " disabled") + '>◀ 이전 단계</button>' : "";
+      var nextBtn = idx < 2 ? '<button class="btn btn-ghost btn-sm' + (srvOKStage ? "" : " is-off") + '" type="button" data-act="next-stage"' + (srvOKStage ? "" : " disabled") + '>다음 단계 ▶</button>' : "";
+      foot = '<div class="dr-foot-row"><div class="foot-note' + (srvOKStage ? "" : " warn") + '">' + (srvOKStage ? st.label + " 단계예요. 승인 대기 단계에서만 승인할 수 있어요." : "데모 모드예요. 단계 이동은 서버에 연결한 뒤에 할 수 있어요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러 주세요.") + '</div>' +
         '<div class="foot-actions">' + prevBtn + nextBtn +
         '<button class="btn btn-ghost btn-sm" type="button" data-act="close">닫기</button></div></div>';
     }
@@ -3395,11 +3397,31 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     reactTo("jarvis", "보류 사유 확인했어요");
   }
 
-  function completeCard(){
+  async function completeCard(){
     var c = cardById(state.modal && state.modal.id);
     if(!c || c.stage !== "run") return;
-    c.stage = "done";
-    c.completedAt = fmtNow();
+    if(!serverReady()){
+      showToast("지금은 <b>데모 모드</b>예요. 서버에 연결한 뒤에 완료 처리해 주세요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러요.");
+      return;
+    }
+    var at = fmtNow();
+    try{
+      var r = await apiPatch("/api/cards/" + encodeURIComponent(c.id) + "/stage", { stage:"done" });
+      if(r.ok && r.data && r.data.card){
+        c = normalizeApiCard(r.data.card);
+        c.completedAt = at;
+        replaceCard(c);
+      }else{
+        var why = "";
+        if(r.status === 401) why = "세션 토큰이 없어 서버에 저장하지 못했어요.";
+        else if(r.status === 400) why = "서버가 이 단계 이동을 허용하지 않았어요.";
+        showToast("<b>서버에 저장하지 못했어요.</b> — 완료 단계로 옮기지 않았어요." + (why ? "<br>" + why : ""));
+        return;
+      }
+    }catch(e){
+      showToast("<b>서버에 저장하지 못했어요.</b> — 완료 단계로 옮기지 않았어요. 연결을 확인한 뒤 다시 눌러 주세요.");
+      return;
+    }
     notifications.unshift({
       id:"n" + Date.now(), kind:"완료", tone:"ok", cardId:c.id,
       text:c.title + " · 실행 완료", meta:(c.ai ? aiById(c.ai).name : "AI") + " · " + c.completedAt, time:nowHM(), unread:true
@@ -3409,13 +3431,34 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     reactTo(c.ai || "selin", "완료! 수고했어요 ♡");
   }
 
-  function moveStage(dir){
+  async function moveStage(dir){
     var c = cardById(state.modal && state.modal.id);
     if(!c) return;
     var idx = STAGES.map(function(s){ return s.id; }).indexOf(c.stage);
     var next = Math.max(0, Math.min(STAGES.length - 1, idx + dir));
     if(STAGES[next].id === c.stage) return;
-    c.stage = STAGES[next].id;
+    if(!serverReady()){
+      showToast("지금은 <b>데모 모드</b>예요. 서버에 연결한 뒤에 단계를 옮겨 주세요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러요.");
+      return;
+    }
+    var target = STAGES[next].id;
+    try{
+      var r = await apiPatch("/api/cards/" + encodeURIComponent(c.id) + "/stage", { stage:target });
+      if(r.ok && r.data && r.data.card){
+        c = normalizeApiCard(r.data.card);
+        replaceCard(c);
+      }else{
+        var why = "";
+        if(r.status === 400 && r.data && r.data.error === "invalid_transition") why = "서버는 단계를 앞으로만 옮길 수 있어요.";
+        else if(r.status === 400 && r.data && r.data.error === "use_approve_endpoint") why = "승인 대기 단계는 승인 버튼으로만 넘어가요.";
+        else if(r.status === 401) why = "세션 토큰이 없어 서버에 저장하지 못했어요.";
+        showToast("<b>서버에 저장하지 못했어요.</b> — 단계는 그대로예요." + (why ? "<br>" + why : ""));
+        return;
+      }
+    }catch(e){
+      showToast("<b>서버에 저장하지 못했어요.</b> — 단계는 그대로예요. 연결을 확인한 뒤 다시 눌러 주세요.");
+      return;
+    }
     saveState(); renderAll(); renderModal();
     showToast("<b>" + STAGES[next].label + "</b> 단계로 옮겼어요.");
   }
