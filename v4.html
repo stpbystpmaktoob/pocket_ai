@@ -2325,7 +2325,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       id:"jarvis", name:"자비스", role:"관제", mbti:"INTJ", av:"jarvis", tone:"#6D57B0", mine:false, joined:"2026-10-28",
       person:"먼저 확인하고 마지막에 웃는 관제탑. 승인 없이는 아무것도 밖으로 보내지 않아요.",
       lines:["계약서 검토 중!","견적 금액 다시 확인!","출처 없는 숫자는 안 돼!","승인 로그 정리 중 ♡","회의는 3시에!"],
-      home:{ x:27, y:14 }, desk:"업무 책상 A",
+      home:{ x:20, y:14 }, desk:"업무 책상 A",
       autoReply:true, status:"작업중", lastCheck:"10:04",
       caps:{ scan:{v:6,l:10}, draft:{v:3,l:5}, submit:{v:1,l:3} }
     },
@@ -2333,7 +2333,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       id:"selin", name:"셀린", role:"실행", mbti:"ENFP", av:"selin", tone:"#E85D88", mine:false, joined:"2026-10-28",
       person:"승인만 떨어지면 가장 먼저 달려가는 실행 담당. 초안은 제가 다 써요.",
       lines:["초안 작성 중~","커피 타임 ☕","설문 3건 신청 완료!","복붙 문구 준비 완료","바로 달려갈게!"],
-      home:{ x:48, y:14 }, desk:"업무 책상 B",
+      home:{ x:42, y:16 }, desk:"업무 책상 B",
       autoReply:true, status:"작업중", lastCheck:"10:11",
       caps:{ scan:{v:5,l:8}, draft:{v:3,l:4}, submit:{v:2,l:3} }
     },
@@ -2349,7 +2349,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       id:"cora", name:"코랄", role:"디자인", mbti:"ENTP", av:"cora", tone:"#E0742F", mine:false, joined:"2026-11-26",
       person:"색을 고르는 데 진심인 디자이너. 3D 요소 18종을 만든 장본인이에요.",
       lines:["3D 요소 만드는 중!","색감 다시 볼게요~","썸네일 3안 준비!","미리캔버스 업로드!","이 색 어때요?"],
-      home:{ x:36, y:18 }, desk:"업무 책상 B",
+      home:{ x:64, y:13 }, desk:"업무 책상 B",
       autoReply:true, status:"휴식", lastCheck:"09:31",
       caps:{ scan:{v:3,l:5}, draft:{v:1,l:3}, submit:{v:0,l:2} }
     }
@@ -3572,7 +3572,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       for(var k=0;k<movers.length;k++){
         var o = movers[k];
         if(o === m) continue;
-        if(Math.abs(o.x - z.x) < 11.5 || (o.tx && Math.abs(o.tx - z.x) < 11.5)){ busy = true; break; }
+        if(Math.abs(o.x - z.x) < 14 || (o.tx && Math.abs(o.tx - z.x) < 14)){ busy = true; break; }
       }
       if(!busy) free.push(z);
     }
@@ -3622,7 +3622,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     for(var k=0;k<movers.length;k++){
       var o = movers[k];
       if(o === m || o.walking) continue;
-      if(Math.abs(o.x - m.x) < 11) return true;
+      if(Math.abs(o.x - m.x) < 13.5) return true;
     }
     return false;
   }
