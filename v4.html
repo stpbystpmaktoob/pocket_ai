@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#E85D88">
 <title>MAKTOOB LAB AI방 · v4</title>
 <style>
+
 /* ============================================================
    MAKTOOB LAB · AI 작업실 대시보드 v3
    살아 움직이는 미니 사무실 × 싸이월드 감성 × 포켓몬 비서
@@ -1007,6 +1008,7 @@ select.field{appearance:none;background-image:linear-gradient(45deg,transparent 
   .char{transition:none !important}
 }
 
+
 /* ============================================================
    MAKTOOB LAB · AI방 대시보드 v4 — 추가 스타일
    (v3 기본 스타일 위에 얹는 v4 셸 · 회의실 · 봇 · 캘린더 · 메모)
@@ -1878,9 +1880,340 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   #snow{display:none !important}
 }
 
+/* ============================================================
+   v4.1 — 실시간 상태칩 · 팀 스트립 · 3단 대시보드
+   ============================================================ */
+/* ---------- 상단 상태칩 ---------- */
+.status-chips{
+  display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;
+  padding:7px 12px;background:linear-gradient(180deg,#FFF7FA,#FFF2F7);
+  border-bottom:2px solid var(--p2);
+}
+.status-chips::-webkit-scrollbar{display:none}
+.chipc{
+  flex:0 0 auto;display:flex;align-items:center;gap:5px;cursor:pointer;
+  padding:5px 10px;border-radius:999px;border:1.5px solid #F2C9D8;
+  background:#fff;color:#6B4A58;font-size:10.5px;font-weight:800;letter-spacing:-.01em;
+  box-shadow:0 2px 0 #F6DEE7;white-space:nowrap;transition:transform .12s ease,border-color .15s ease;
+}
+.chipc:hover{transform:translateY(-1px);border-color:#E9A9BF}
+.chipc b{font-size:11.5px;font-weight:900;color:var(--accent-d);font-variant-numeric:tabular-nums}
+.chipc .em{font-size:11px;line-height:1}
+.chipc i{width:7px;height:7px;border-radius:50%;background:#4FBF8F;box-shadow:0 0 0 3px rgba(79,191,143,.18);display:block}
+.chipc.c-wait.on{border-color:#EDCE8C;background:#FFF9EC;color:#946417;animation:chipPulse 1.8s ease-in-out infinite}
+.chipc.c-wait.on b{color:#B07A22}
+.chipc.c-msg.on{border-color:#EFA9C1;background:#FFF4F8}
+.chipc.c-msg.on b{color:var(--accent-d)}
+@keyframes chipPulse{0%,100%{box-shadow:0 2px 0 #F6E3BE}50%{box-shadow:0 2px 0 #F6E3BE,0 0 0 4px rgba(240,192,103,.22)}}
+
+/* ---------- 역할별 AI 팀원 스트립 ---------- */
+.teamstrip{
+  display:flex;align-items:center;gap:7px;overflow-x:auto;scrollbar-width:thin;
+  padding:8px 12px;background:linear-gradient(180deg,#FFFBFC,#FFF5F9);
+  border-bottom:2px solid var(--p2);
+}
+.teamstrip::-webkit-scrollbar{height:4px}
+.teamstrip::-webkit-scrollbar-thumb{background:#F3CFDC;border-radius:9px}
+.tstrip{
+  flex:0 0 auto;display:flex;align-items:center;gap:7px;cursor:pointer;text-align:left;
+  padding:4px 11px 4px 4px;border-radius:14px;border:1.5px solid var(--line);
+  background:#fff;box-shadow:0 2px 0 var(--line2);transition:transform .12s ease,border-color .15s ease;
+}
+.tstrip:hover{transform:translateY(-1px);border-color:#E9A9BF;background:#FFF8FB}
+.ts-av{position:relative;display:block;flex:0 0 auto}
+.ts-av .av{width:27px;height:27px;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px #F6DFE8}
+.ts-av .st-dot{position:absolute;right:-2px;bottom:-2px;width:8px;height:8px;box-shadow:0 0 0 2px #fff}
+.ts-tx{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.ts-tx b{font-size:11px;font-weight:900;color:var(--ink)}
+.ts-tx i{font-style:normal;font-size:8.5px;font-weight:700;color:var(--ink3);white-space:nowrap}
+.tstrip.more{border-style:dashed;background:#FFFCFD}
+.ts-plus{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--accent);background:#FDF0F5;flex:0 0 auto}
+
+/* ---------- 3단 그리드 ---------- */
+.p3{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:10px 12px 6px;background:#FFFCFD}
+.p3-l,.p3-r{display:flex;flex-direction:column;gap:10px;min-width:0}
+.p3-c{display:flex;flex-direction:column;gap:0;min-width:0}
+.pc{
+  position:relative;background:#FFFDFC;border:2px solid #F1CBD9;border-radius:14px;
+  box-shadow:0 3px 0 #F7DCE5,0 8px 16px rgba(201,63,104,.04);padding:9px 11px 10px;min-width:0;
+}
+.pc-head{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.pc-head h3{margin:0;font-size:11.5px;font-weight:900;letter-spacing:-.02em;display:flex;align-items:center;gap:5px;color:var(--ink)}
+.pc-head h3 span{font-size:12px}
+.pc-sub{margin-left:auto;font-size:9px;font-weight:800;color:var(--ink3);white-space:nowrap}
+.pc-more{margin-left:auto;padding:0;background:none;border:0;cursor:pointer;font-size:9px;font-weight:900;color:var(--accent-d);text-decoration:underline dotted;text-underline-offset:2px;white-space:nowrap}
+.pc-add{
+  margin-left:auto;cursor:pointer;padding:3px 9px;border-radius:8px;font-size:9px;font-weight:900;
+  border:1.5px solid var(--accent-d);color:#fff;background:linear-gradient(180deg,#F4799F,#E85D88);box-shadow:0 2px 0 #D9507B;
+}
+.pc-add:hover{filter:brightness(1.04)}
+
+/* 마이룸 */
+.mr-boss{
+  display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:11px;
+  background:linear-gradient(120deg,#FFF2F7,#FFF9F4);border:1.5px dashed #F3C9D9;
+}
+.mr-av{
+  width:33px;height:33px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:900;color:#fff;letter-spacing:-.03em;transform:rotate(-2deg);
+  background:linear-gradient(160deg,#F9A8C2,#E85D88 62%,#D9507B);
+  border:2px solid #fff;box-shadow:0 0 0 2px #EEB8CB;
+}
+.mr-who{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.mr-who b{font-size:12px;font-weight:900}
+.mr-who span{font-size:8.5px;font-weight:800;color:var(--ink3);letter-spacing:.03em}
+.mr-boss .live{margin-left:auto}
+.mr-note{display:flex;flex-direction:column;gap:3px;margin-top:7px;cursor:text}
+.mr-note>span{font-size:8.5px;font-weight:800;color:var(--ink3);letter-spacing:.02em;display:flex;gap:5px}
+.mr-note>span em{font-style:normal;font-size:8px;color:#D5A7B8;font-weight:700}
+.mr-note input{
+  width:100%;min-width:0;padding:6px 8px;border-radius:9px;border:1.5px solid #F0CDDA;
+  background:repeating-linear-gradient(180deg,#FFFDF7 0 20px,#FCF4E9 20px 21px);
+  font:inherit;font-size:10.5px;font-weight:700;color:#5E4A54;outline:none;
+}
+.mr-note input::placeholder{color:#C9AEB9;font-weight:600}
+.mr-note input:focus{border-color:#E9A9BF;box-shadow:0 0 0 3px #FDE9F0}
+.mr-room{
+  margin-top:7px;width:100%;display:flex;align-items:center;gap:6px;cursor:pointer;
+  padding:7px 9px;border-radius:10px;border:1.5px solid #CDE4DA;
+  background:linear-gradient(180deg,#F6FCF9,#EAF7F1);color:#3F7F68;
+  font-size:10.5px;font-weight:900;box-shadow:0 2px 0 #DCEEE6;white-space:nowrap;
+}
+.mr-room b{color:#2F6B55;font-size:11px}
+.mr-room:hover{background:#EAF7F1;transform:translateY(-1px)}
+.mr-go{margin-left:auto;font-weight:900}
+
+/* 오늘의 진행 현황 */
+.pg-row{display:grid;grid-template-columns:54px minmax(0,1fr) 48px;align-items:center;gap:6px;margin-top:6px}
+.pg-lab{font-size:10px;font-weight:800;color:var(--ink2);white-space:nowrap}
+.pg-bar{height:7px;border-radius:999px;background:#F7E4EB;overflow:hidden}
+.pg-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#F9A8C2,#E85D88);transition:width .45s ease}
+.pg-bar i.warn{background:linear-gradient(90deg,#FCD79B,#EFAE4E)}
+.pg-bar i.ok{background:linear-gradient(90deg,#A7DFC7,#4FBF8F)}
+.pg-row b{font-size:11px;font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+.pg-row b i{font-style:normal;font-size:8.5px;color:var(--ink3);font-weight:700}
+.pg-foot{
+  margin-top:9px;width:100%;cursor:pointer;padding:6px;border-radius:9px;
+  border:1.5px dashed #F0C9D8;background:#FFFBFD;color:var(--accent-d);
+  font-size:9.5px;font-weight:900;
+}
+.pg-foot:hover{background:#FFF4F8}
+
+/* 주민도감 미리보기 */
+.dex-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.dex-row::-webkit-scrollbar{display:none}
+.dex-mini{
+  flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+  padding:6px 3px;border-radius:10px;border:1.5px solid #F3D3DF;background:#FFFCFD;
+}
+.dex-mini:hover{background:#FFF6FA;border-color:#E9A9BF;transform:translateY(-1px)}
+.dex-av{position:relative;display:block}
+.dex-av .av{width:25px;height:25px}
+.dex-av .st-dot{position:absolute;right:-2px;bottom:-2px;width:7px;height:7px;box-shadow:0 0 0 2px #FFFCFD}
+.dex-mini b{font-size:9.5px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.dex-mini i{font-style:normal;font-size:8px;font-weight:700;color:var(--ink3)}
+
+/* 사무실 머리 · 구역 표지판 */
+.room-head{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:8px 11px;background:linear-gradient(180deg,#FFFDFC,#FFF6FA);border-bottom:1.5px dashed #F3CBD9;
+}
+.rh-live{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;color:#5E4A54}
+.rh-live b{font-size:12px;font-weight:900}
+.rh-last{font-size:9.5px;font-weight:700;color:var(--ink3)}
+.rh-last b{color:var(--ink2);font-variant-numeric:tabular-nums}
+.rh-bub{
+  margin-left:auto;cursor:pointer;padding:4px 9px;border-radius:999px;font-size:9.5px;font-weight:900;
+  border:1.5px solid #F2C9D8;background:#fff;color:#8A5A6B;box-shadow:0 2px 0 #F6DEE7;white-space:nowrap;
+}
+.rh-bub:hover{background:#FFF4F8}
+.rh-bub[aria-pressed="true"]{background:linear-gradient(180deg,#F4799F,#E85D88);border-color:var(--accent-d);color:#fff;box-shadow:0 2px 0 #D9507B}
+.zone-bar{display:flex;align-items:center;gap:6px;padding:6px 11px 7px;background:#FFF9FC;border-bottom:1.5px dashed #F3CBD9}
+.zs{
+  display:flex;align-items:center;gap:4px;cursor:pointer;padding:3px 9px;border-radius:8px;
+  font-size:9.5px;font-weight:900;color:#6B4A58;border:1.5px solid #F0CDDA;background:#fff;
+  box-shadow:0 1.5px 0 #F6DEE7;transform:rotate(-1deg);
+}
+.zs:nth-child(2){transform:rotate(1deg)}
+.zs:hover{background:#FFF3F8;border-color:#E9A9BF;transform:rotate(0) translateY(-1px)}
+.zs span{font-size:10px;line-height:1}
+
+/* 3단: 사무실을 컬럼 flex로 */
+.p3-c .room{display:flex;flex-direction:column;gap:0}
+.p3-c .room-stage{flex:1 1 auto;height:420px;min-height:0}
+.p3-c .office-foot{background:#FFFCFD}
+
+/* 3단: 우측 처리량 카드 */
+.p3-r .stats{flex:none;width:auto;margin:0;align-self:stretch}
+.p3-r .stats-head{flex-wrap:wrap;gap:3px 7px}
+.p3-r .stats-head .date{margin-left:0;font-size:9px}
+
+/* 작업 대시보드 체크리스트 */
+.tc-sum{display:flex;align-items:center;gap:9px;font-size:9.5px;font-weight:700;color:var(--ink3);padding-bottom:7px;border-bottom:1px dashed var(--line2)}
+.tc-sum b{font-size:11px;font-weight:900;color:var(--accent-d);font-variant-numeric:tabular-nums}
+.tc-list{display:flex;flex-direction:column;gap:5px;margin-top:7px}
+.tc-item{
+  display:flex;align-items:center;gap:7px;text-align:left;cursor:pointer;
+  padding:6px 7px;border-radius:9px;border:1.5px solid #F4DBE4;background:#FFFCFD;min-width:0;
+}
+.tc-item:hover{border-color:#E9A9BF;background:#FFF7FA;transform:translateY(-1px)}
+.tc-mark{
+  flex:0 0 auto;width:17px;height:17px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:900;color:var(--accent-d);background:#FBE7EE;border:1.5px solid #F3C9D9;
+}
+.tc-item.done .tc-mark{background:#E7F6EF;border-color:#BFE6D5;color:#3F8A6B}
+.tc-item.approve .tc-mark{background:#FFF3DF;border-color:#F0D9A8;color:#B07A22}
+.tc-item.run .tc-mark{background:#EAF1FB;border-color:#C6D8F2;color:#4A79B8}
+.tc-tx{min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.tc-tx b{font-size:10px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-tx i{font-style:normal;font-size:8.5px;font-weight:700;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-go{margin-left:auto;flex:0 0 auto;font-size:10px;font-weight:900;color:#DDB8C6}
+.tc-item.done .tc-tx b{color:var(--ink3);text-decoration:line-through}
+.tc-all{
+  margin-top:7px;width:100%;cursor:pointer;padding:6px;border-radius:9px;
+  border:1.5px dashed #F0C9D8;background:#FFFBFD;color:var(--accent-d);font-size:9.5px;font-weight:900;
+}
+.tc-all:hover{background:#FFF4F8}
+
+/* 말풍선 모두 보기 */
+.room-stage.show-all .char .bubble{opacity:1;transform:translate(-50%,0) scale(1)}
+.room-stage.show-all .char .bubble{transition-delay:.05s}
+
+/* 주민도감 상세 모달 */
+.dex-wrap{max-height:calc(100vh - 80px);overflow-y:auto}
+.dex-hero{display:flex;align-items:center;gap:9px;padding:11px 14px 10px;background:linear-gradient(120deg,#FFF3F7,#FFF9F4);border-bottom:1.5px dashed #F3C9D9}
+.dex-hero h2{margin:0;font-size:15px;font-weight:900;letter-spacing:-.02em}
+.dex-hero p{margin:2px 0 0;font-size:9.5px;color:var(--ink3);line-height:1.5}
+.dex-hero .dh-n{margin-left:auto;font-size:11px;font-weight:900;color:var(--accent-d);background:#fff;border:1.5px solid #F2C9D8;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.dex-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:11px 13px}
+.dexcard{background:#FFFDFC;border:1.5px solid #F3D3DF;border-radius:13px;padding:9px 10px;box-shadow:0 2px 0 #F9E2EA;min-width:0}
+.dc-top{display:flex;align-items:flex-start;gap:8px}
+.dc-sprite{width:56px;height:56px;flex:0 0 auto;border-radius:12px;background:linear-gradient(160deg,#FFF6FA,#FDEAF1);border:1.5px solid #F6DCE6;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.dc-sprite .sprite{height:56px;width:48px}
+.dc-who{min-width:0}
+.dc-who h3{margin:0;font-size:12.5px;font-weight:900;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.dc-who h3 .role{font-size:8px;font-weight:900;color:#fff;background:var(--tone,#E85D88);border-radius:999px;padding:1px 6px}
+.dc-meta{display:flex;align-items:center;gap:4px;font-size:8.5px;font-weight:700;color:var(--ink3);margin-top:2px;flex-wrap:wrap}
+.dc-meta b{color:var(--ink2)}
+.dc-who p{margin:3px 0 0;font-size:9px;line-height:1.5;color:#5E4A54;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dc-kpi{display:flex;gap:5px;margin-top:7px}
+.dc-kpi span{flex:1 1 0;min-width:0;text-align:center;font-size:8px;font-weight:800;color:var(--ink3);background:#FFF7FA;border:1px solid #F6DEE7;border-radius:8px;padding:3px 2px}
+.dc-kpi b{display:block;font-size:11px;color:var(--ink)}
+.dc-foot{display:flex;align-items:center;gap:5px;margin-top:7px}
+.dc-foot .role-tag{font-size:8.5px;font-weight:800;color:#8A5A6B;background:#FFF2F7;border:1px dashed #F3C9D9;border-radius:999px;padding:2px 7px}
+.dc-foot .btn{margin-left:auto}
+
+/* ---------- 다크 테마 ---------- */
+html[data-theme="dark"] .status-chips{background:linear-gradient(180deg,#271E2C,#231B28);border-color:#3E2E46}
+html[data-theme="dark"] .chipc{background:#2A2031;border-color:#4A3550;color:#E7D3DC;box-shadow:none}
+html[data-theme="dark"] .chipc b{color:#F6A8C6}
+html[data-theme="dark"] .chipc.c-wait.on{background:#33291D;border-color:#5C4A2C;color:#E7C081}
+html[data-theme="dark"] .chipc.c-wait.on b{color:#F3CF9C}
+html[data-theme="dark"] .chipc.c-msg.on{background:#3A2430;border-color:#6E4356}
+html[data-theme="dark"] .chipc.c-msg.on b{color:#F6A8C6}
+html[data-theme="dark"] .teamstrip{background:linear-gradient(180deg,#241C29,#221A27);border-color:#3E2E46}
+html[data-theme="dark"] .tstrip{background:#2A2031;border-color:#4A3550;box-shadow:none}
+html[data-theme="dark"] .tstrip:hover{background:#33263A;border-color:#5C4055}
+html[data-theme="dark"] .ts-tx b{color:#F4E9EF}
+html[data-theme="dark"] .ts-tx i{color:#A18B98}
+html[data-theme="dark"] .tstrip.more{background:#221A27}
+html[data-theme="dark"] .ts-plus{background:#33263A;color:#F1789F}
+html[data-theme="dark"] .p3{background:#221A27}
+html[data-theme="dark"] .pc{background:#261E2B;border-color:#40304A;box-shadow:0 2px 0 #2E2434}
+html[data-theme="dark"] .pc-head h3{color:#F4E9EF}
+html[data-theme="dark"] .mr-boss{background:linear-gradient(120deg,#33253A,#2D2530);border-color:#4E3550}
+html[data-theme="dark"] .mr-note input{background:linear-gradient(180deg,#2E2531,#2A2230);border-color:#4A3550;color:#F1E4EA}
+html[data-theme="dark"] .mr-note input::placeholder{color:#8E7683}
+html[data-theme="dark"] .mr-room{background:#22382F;border-color:#345548;color:#9BD9BC;box-shadow:none}
+html[data-theme="dark"] .mr-room b{color:#BDEBD5}
+html[data-theme="dark"] .pg-bar{background:#3B2C3B}
+html[data-theme="dark"] .pg-foot,html[data-theme="dark"] .tc-all{background:#2A2130;border-color:#4A3550;color:#F6A8C6}
+html[data-theme="dark"] .dex-mini{background:#2A2130;border-color:#43304A}
+html[data-theme="dark"] .dex-mini:hover{background:#33263A}
+html[data-theme="dark"] .dex-mini b{color:#F4E9EF}
+html[data-theme="dark"] .room-head{background:linear-gradient(180deg,#271E2C,#251D2B);border-color:#3E2E46}
+html[data-theme="dark"] .rh-live{color:#E7D3DC}
+html[data-theme="dark"] .rh-bub{background:#2A2031;border-color:#4A3550;color:#E2C4D1;box-shadow:none}
+html[data-theme="dark"] .rh-bub[aria-pressed="true"]{background:linear-gradient(180deg,#F1789F,#D9507B);color:#fff}
+html[data-theme="dark"] .zone-bar{background:#241C29;border-color:#3E2E46}
+html[data-theme="dark"] .zs{background:#2A2031;border-color:#4A3550;color:#E2C4D1;box-shadow:none}
+html[data-theme="dark"] .zs:hover{background:#33263A}
+html[data-theme="dark"] .p3-c .office-foot{background:#221A27}
+html[data-theme="dark"] .tc-sum{border-color:#40304A}
+html[data-theme="dark"] .tc-item{background:#2A2031;border-color:#43304A}
+html[data-theme="dark"] .tc-item:hover{background:#33263A}
+html[data-theme="dark"] .tc-tx b{color:#F4E9EF}
+html[data-theme="dark"] .tc-mark{background:#3B2B35;border-color:#52384A;color:#F6A8C6}
+html[data-theme="dark"] .tc-item.done .tc-mark{background:#24382E;border-color:#35543F;color:#9BD9BC}
+html[data-theme="dark"] .dex-hero{background:linear-gradient(120deg,#33253A,#2B2430);border-color:#3E2E46}
+html[data-theme="dark"] .dex-hero .dh-n{background:#2A2031;border-color:#4A3550;color:#F6A8C6}
+html[data-theme="dark"] .dexcard{background:#2A2130;border-color:#43304A;box-shadow:none}
+html[data-theme="dark"] .dc-sprite{background:linear-gradient(160deg,#33263A,#2C2431);border-color:#45314A}
+html[data-theme="dark"] .dc-who h3{color:#F4E9EF}
+html[data-theme="dark"] .dc-who p{color:#D8C3CE}
+html[data-theme="dark"] .dc-kpi span{background:#33263A;border-color:#43304A;color:#A18B98}
+html[data-theme="dark"] .dc-kpi b{color:#F4E9EF}
+html[data-theme="dark"] .dc-foot .role-tag{background:#33263A;border-color:#4E3550;color:#E2C4D1}
+
+/* ---------- 반응형: 3단 / 1단 ---------- */
+@media (min-width:1100px){
+  :root{--v4w:1400px}
+  .quick{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .p3{grid-template-columns:262px minmax(0,1fr) 300px;align-items:start;gap:12px;padding:12px 14px 6px}
+}
+@media (min-width:1100px) and (max-width:1279px){
+  .p3-c .room-stage{height:380px}
+  .p3-c .sprite{height:98px;width:84px}
+  .p3-c .bubble{max-width:138px;font-size:9.5px}
+  .p3-c .tag{font-size:8px;padding:1px 6px}
+  .p3-c .tag em{display:none}
+  .p3-c .office-foot{gap:6px;padding:8px 10px 10px}
+  .p3-c .of-tx b{font-size:10.5px}
+  .p3-c .of-tx i{font-size:8.5px}
+  .p3-c .of-ic{font-size:15px}
+  .pc-head h3{font-size:11px}
+}
+@media (max-width:1099px){
+  .p3{display:flex;flex-direction:column;gap:10px}
+  .p3-c{order:1}
+  .p3-r{order:2}
+  .p3-l{order:3}
+}
+@media (max-width:900px){
+  .status-chips{padding:6px 9px;gap:5px}
+  .chipc{padding:4px 8px;font-size:9.5px}
+  .chipc b{font-size:10.5px}
+  .teamstrip{padding:7px 9px;gap:6px}
+  .ts-av .av{width:24px;height:24px}
+  .ts-tx b{font-size:10.5px}
+  .ts-tx i{font-size:8px}
+  .tstrip{padding:3px 9px 3px 3px;gap:6px}
+  .p3{padding:8px 8px 4px;gap:8px}
+  .p3-l,.p3-r{gap:8px}
+  .pc{padding:8px 10px 9px}
+  .p3-c .room-stage{height:216px}
+  .room-head{padding:6px 9px;gap:6px}
+  .rh-bub{font-size:8.5px;padding:3px 7px}
+  .rh-last{font-size:9px}
+  .zone-bar{padding:5px 9px 6px;gap:5px}
+  .zs{font-size:9px;padding:2px 7px}
+  .p3-r .stats{padding:8px 11px 7px}
+  .dex-grid{grid-template-columns:minmax(0,1fr);padding:9px 10px}
+  .dex-wrap{max-height:none}
+  .mr-av{width:30px;height:30px;font-size:14px}
+  .pg-row{grid-template-columns:50px minmax(0,1fr) 46px}
+}
+@media (max-width:390px){
+  .chipc{padding:3px 7px;font-size:9px;gap:4px}
+  .chipc .em{font-size:10px}
+  .rh-bub{padding:2px 6px;font-size:8px}
+  .rh-live{font-size:10px}
+}
+
 </style>
 </head>
 <body>
+
 <div class="page">
   <div class="app">
 
@@ -1907,6 +2240,22 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       </div>
     </header>
 
+    <!-- ================= 실시간 상태칩 4개 ================= -->
+    <div class="status-chips" id="statusChips" role="group" aria-label="실시간 상태">
+      <button class="chipc c-conn" id="chipConn" type="button" title="연결된 AI 보기">
+        <i aria-hidden="true"></i>연결 <b id="chipConnN">4</b>명
+      </button>
+      <button class="chipc c-msg" id="chipMsg" type="button" title="안 읽은 메시지 · 회의실 열기">
+        <span class="em" aria-hidden="true">💬</span>메시지 <b id="chipMsgN">3</b>
+      </button>
+      <button class="chipc c-wait" id="chipWait" type="button" title="답장 기다리는 중 · 회의실 열기">
+        <span class="em" aria-hidden="true">⏳</span>답하는 중 <b id="chipWaitN">0</b>
+      </button>
+      <button class="chipc c-room" id="chipRoom" type="button" title="지금 있는 방 열기">
+        <span class="em" aria-hidden="true">🏠</span>방 <b id="chipRoomN">지휘실</b>
+      </button>
+    </div>
+
     <!-- ================= 빠른 메뉴 (2줄 × 3) ================= -->
     <nav class="quick" id="quickNav" role="tablist" aria-label="빠른 메뉴">
       <button class="q" type="button" role="tab" data-view="office" aria-selected="true" aria-controls="view-office">
@@ -1929,10 +2278,61 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       </button>
     </nav>
 
+    <!-- ================= 역할별 AI 팀원 칩 스트립 ================= -->
+    <div class="teamstrip" id="teamStrip" role="group" aria-label="AI 팀원"></div>
+
     <!-- ================= 사무실 ================= -->
     <div class="view" id="view-office">
+  <div class="p3">
+    <aside class="p3-l">
+      <section class="pc myroom" aria-label="마이룸">
+        <div class="pc-head"><h3><span aria-hidden="true">🏠</span> 마이룸</h3><span class="pc-sub">마크툽의 방</span></div>
+        <div class="mr-boss">
+          <span class="mr-av" aria-hidden="true">마</span>
+          <span class="mr-who"><b>마크툽</b><span>BOSS · ENFP</span></span>
+          <i class="live" aria-hidden="true" title="접속 중"></i>
+        </div>
+        <label class="mr-note" for="bossNote">
+          <span>📌 한 줄 공지 <em>눌러서 수정</em></span>
+          <input id="bossNote" type="text" maxlength="60" autocomplete="off" placeholder="한 줄 공지를 적어 두세요">
+        </label>
+        <button class="mr-room" id="mrRoomBtn" type="button">
+          <span aria-hidden="true">🩵</span>메인 회의실 <b id="mrRoomN">4</b>명<span class="mr-go">→</span>
+        </button>
+      </section>
 
+      <section class="pc prog" aria-label="오늘의 진행 현황">
+        <div class="pc-head"><h3><span aria-hidden="true">📈</span> 오늘의 진행 현황</h3><span class="pc-sub" id="progDate">11/27</span></div>
+        <div class="pg-row">
+          <span class="pg-lab">스캔</span><span class="pg-bar"><i id="pgScanBar"></i></span><b id="pgScan">18<i> / 30</i></b>
+        </div>
+        <div class="pg-row">
+          <span class="pg-lab">승인 대기</span><span class="pg-bar"><i class="warn" id="pgWaitBar"></i></span><b id="pgWait">4<i>건</i></b>
+        </div>
+        <div class="pg-row">
+          <span class="pg-lab">완료</span><span class="pg-bar"><i class="ok" id="pgDoneBar"></i></span><b id="pgDone">2<i>건</i></b>
+        </div>
+        <button class="pg-foot" id="progMoreBtn" type="button">대시보드에서 승인하기 →</button>
+      </section>
+
+      <section class="pc dex" aria-label="주민도감 미리보기">
+        <div class="pc-head"><h3><span aria-hidden="true">📔</span> 주민도감</h3><button class="pc-more" id="dexMore" type="button">전체 보기</button></div>
+        <div class="dex-row" id="dexRow"></div>
+      </section>
+    </aside>
+
+    <div class="p3-c">
       <section class="room" aria-label="살아 움직이는 미니 사무실">
+        <div class="room-head">
+          <span class="rh-live"><i class="live" aria-hidden="true"></i><b id="rhOn">4명</b> 근무 중</span>
+          <span class="rh-last">마지막 활동 <b id="rhLast">10:11</b></span>
+          <button class="rh-bub" id="bubbleAllBtn" type="button" aria-pressed="false">💬 말풍선 모두 보기</button>
+        </div>
+        <div class="zone-bar" role="group" aria-label="사무실 구역 바로가기">
+          <button class="zs" type="button" data-zone-go="cmd"><span aria-hidden="true">🩵</span>회의실</button>
+          <button class="zs" type="button" data-zone-go="library"><span aria-hidden="true">📚</span>자료실</button>
+          <button class="zs" type="button" data-zone-go="lounge"><span aria-hidden="true">☕</span>휴식존</button>
+        </div>
         <div class="room-stage" id="roomStage">
           <div class="wall-line" aria-hidden="true"></div>
           <div class="floor" aria-hidden="true"></div>
@@ -2010,8 +2410,28 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
           <span class="float-heart h2" aria-hidden="true">♡</span>
           <span class="float-heart h3" aria-hidden="true">♥</span>
         </div>
+      </section>
+      <div class="office-foot">
+        <button class="of-card" type="button" data-view="chat">
+          <span class="of-ic">💬</span>
+          <span class="of-tx"><b>회의실</b><i id="ofChatSub">새 글 3개 · 지휘실 확인</i></span>
+          <span class="of-arrow">→</span>
+        </button>
+        <button class="of-card" type="button" data-view="dash">
+          <span class="of-ic">📊</span>
+          <span class="of-tx"><b>승인 대기 <span id="ofApproveN">4</span>건</b><i>대시보드에서 쪽지 열기</i></span>
+          <span class="of-arrow">→</span>
+        </button>
+        <button class="of-card" type="button" data-view="limits">
+          <span class="of-ic">⚡</span>
+          <span class="of-tx"><b>오늘 처리량 <span id="ofLimitPct">60</span>%</b><i id="ofLimitSub">스캔 18 / 30</i></span>
+          <span class="of-arrow">→</span>
+        </button>
+      </div>
+    </div>
 
-        <div class="stats" aria-label="오늘 처리량">
+    <aside class="p3-r">
+      <div class="stats" aria-label="오늘 처리량">
           <div class="stats-head">
             <h2>오늘의 처리량 <span>♡</span></h2>
             <span class="date"><span id="tpDate">11월 27일 금요일</span> · 24:00 초기화</span>
@@ -2039,26 +2459,18 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
             <span class="tt">우리 팀</span>
           </div>
         </div>
-      </section>
 
-      <div class="office-foot">
-        <button class="of-card" type="button" data-view="chat">
-          <span class="of-ic">💬</span>
-          <span class="of-tx"><b>회의실</b><i id="ofChatSub">새 글 3개 · 지휘실 확인</i></span>
-          <span class="of-arrow">→</span>
-        </button>
-        <button class="of-card" type="button" data-view="dash">
-          <span class="of-ic">📊</span>
-          <span class="of-tx"><b>승인 대기 <span id="ofApproveN">4</span>건</b><i>대시보드에서 쪽지 열기</i></span>
-          <span class="of-arrow">→</span>
-        </button>
-        <button class="of-card" type="button" data-view="limits">
-          <span class="of-ic">⚡</span>
-          <span class="of-tx"><b>오늘 처리량 <span id="ofLimitPct">60</span>%</b><i id="ofLimitSub">스캔 18 / 30</i></span>
-          <span class="of-arrow">→</span>
-        </button>
-      </div>
-    </div>
+      <section class="pc taskcheck" aria-label="작업 대시보드 체크리스트">
+        <div class="pc-head"><h3><span aria-hidden="true">✅</span> 작업 대시보드</h3><button class="pc-add" id="taskAddBtn" type="button">＋ 작업</button></div>
+        <div class="tc-sum">
+          <span>전체 <b id="tcAll">0</b></span><span>진행 중 <b id="tcDoing">0</b></span><span>완료 <b id="tcDone">0</b></span>
+        </div>
+        <div class="tc-list" id="tcList"></div>
+        <button class="tc-all" id="tcBoardBtn" type="button">칸반 보드 전체 보기 →</button>
+      </section>
+    </aside>
+  </div>
+</div>
 
     <!-- ================= 회의실 ================= -->
     <div class="view" id="view-chat" hidden>
@@ -2279,7 +2691,9 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle" aria-hidden="true" tabindex="-1"></aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+
 <script>
+
 (function(){
   "use strict";
 
@@ -2309,6 +2723,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     { id:"lounge", icon:"☕", name:"라운지", desc:"자유 수다", on:3 }
   ];
   var AI_MBTI = { jarvis:"INTJ", selin:"ENFP", min:"ISFJ", cora:"ENTP" };
+  var ROLE_TAG = { "관제":"총괄", "실행":"대행", "자료":"리서치", "디자인":"썸네일" };
   var API_AI_MAP = { "자비스":"jarvis", "셀린":"selin", "피클":"selin", "민트":"min", "코랄":"cora", "자비스(관제)":"jarvis", "셀린(실행)":"selin" };
   var CONSENT_DETAIL = {
     "프로필 변경":"프로필 문구가 방문자에게 즉시 노출됩니다. 이전 문구는 보관되어 되돌릴 수 있습니다.",
@@ -2629,7 +3044,8 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   var settings = {
     theme:"light", snow:false, serverUrl:API_DEFAULT, apiKey:"",
     serverOk:false, lastSync:"", mode:"local", serverTp:null,
-    limits:{ scan:30, draft:15, submit:10 }
+    limits:{ scan:30, draft:15, submit:10 },
+    bossNote:"12월 준비 주간 · 승인부터 하나씩 ♡"
   };
 
   (function applySaved(){
@@ -2784,6 +3200,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     if(ofChat) ofChat.textContent = unread ? ("새 글 " + unread + "개 · 지휘실 확인") : "새 글 없음 · 회의실 열기";
     var ofAp = $("ofApproveN");
     if(ofAp) ofAp.textContent = wait;
+    renderStatusChips();
     var t = totalCaps(), lim = settings.limits;
     var pct = Math.round(Math.min(100, ((t.scan/lim.scan) + (t.draft/lim.draft) + (t.submit/lim.submit)) / 3 * 100));
     var ofPct = $("ofLimitPct");
@@ -2896,6 +3313,14 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       return '<button class="team-av ' + esc(a.av) + '" type="button" data-ai="' + esc(a.id) + '" title="' + esc(a.name + " · " + a.role) + ' 프로필" aria-label="' + esc(a.name) + ' 프로필"></button>';
     }).join("") + '<button class="more" type="button" data-act="hire">＋ 채용</button>';
     if($("plaqueText")) $("plaqueText").textContent = AIS.length + "명";
+    if($("rhOn")) $("rhOn").textContent = AIS.length + "명";
+    var last = AIS.map(function(a){ return a.lastCheck || ""; }).sort().pop();
+    if($("rhLast")) $("rhLast").textContent = last || "--:--";
+    renderTeamStrip();
+    renderMyRoom();
+    renderProgress();
+    renderDexPreview();
+    renderTaskCheck();
   }
 
   /* ============================================================
@@ -3031,6 +3456,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     else if(t === "event"){ body = viewEvent(); title = "일정 추가"; }
     else if(t === "limitset"){ body = viewLimitSet(); title = "오늘 한도 조정"; }
     else if(t === "reset"){ body = viewReset(); title = "초기화"; }
+    else if(t === "dex"){ body = viewDex(); title = "주민도감 · " + AIS.length + "명"; }
     drawer.innerHTML =
       '<div class="dr-winbar"><i></i><i></i><i></i><span class="dr-win-title">' + title + "</span>" +
         '<button class="dr-x" type="button" data-act="close" aria-label="닫기">×</button></div>' + body;
@@ -3573,6 +3999,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     };
     reader.readAsDataURL(file);
   }
+
 
   /* ============================================================
      사무실 · 캐릭터 엔진
@@ -4842,9 +5269,171 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   /* ============================================================
      전체 렌더
      ============================================================ */
+  /* ============================================================
+     v4.1 · 3단 대시보드 위젯
+     (상태칩 · 팀 스트립 · 마이룸 · 진행 현황 · 주민도감 · 작업 체크리스트)
+     ============================================================ */
+  function roleTag(a){ return ROLE_TAG[a.role] || "협업"; }
+
+  function renderStatusChips(){
+    var online = AIS.filter(function(a){ return !!a.autoReply; }).length;
+    var unread = 0;
+    for(var r in state.unread){ if(Object.prototype.hasOwnProperty.call(state.unread, r)) unread += state.unread[r]; }
+    var wait = chat.filter(function(m){ return m.who === "me" && (m.status === "전송됨" || m.status === "확인됨"); }).length;
+    var room = roomOf(state.room);
+    if($("chipConnN")) $("chipConnN").textContent = online;
+    if($("chipMsgN")) $("chipMsgN").textContent = unread;
+    if($("chipWaitN")) $("chipWaitN").textContent = wait;
+    if($("chipRoomN")) $("chipRoomN").textContent = room.name;
+    if($("chipWait")) $("chipWait").classList.toggle("on", wait > 0);
+    if($("chipMsg")) $("chipMsg").classList.toggle("on", unread > 0);
+    if($("chipConn")) $("chipConn").setAttribute("aria-label", "연결된 AI " + online + "명 · 봇 열기");
+    if($("chipRoom")) $("chipRoom").setAttribute("aria-label", "지금 있는 방 " + room.name + " · 회의실 열기");
+  }
+
+  function renderTeamStrip(){
+    var el = $("teamStrip");
+    if(!el) return;
+    el.innerHTML = AIS.map(function(a){
+      return '<button class="tstrip" type="button" data-ai="' + esc(a.id) + '" aria-label="' + esc(a.name + " " + a.role + " 프로필 열기") + '">' +
+        '<span class="ts-av"><span class="av ' + esc(a.av) + '" aria-hidden="true"></span>' +
+          '<i class="st-dot ' + statusClass(a.status) + '" aria-hidden="true"></i></span>' +
+        '<span class="ts-tx"><b>' + esc(a.name) + '</b><i>' + esc(a.role) + " · " + esc(roleTag(a)) + '</i></span>' +
+      "</button>";
+    }).join("") +
+      '<button class="tstrip more" type="button" data-act="hire" aria-label="새 AI 채용">' +
+        '<span class="ts-plus" aria-hidden="true">＋</span>' +
+        '<span class="ts-tx"><b>채용</b><i>새 AI</i></span>' +
+      "</button>";
+  }
+
+  function renderMyRoom(){
+    var inp = $("bossNote");
+    if(inp && document.activeElement !== inp) inp.value = settings.bossNote || "";
+    var room = roomOf("cmd");
+    if($("mrRoomN")) $("mrRoomN").textContent = room.on;
+  }
+
+  function renderProgress(){
+    var t = totalCaps(), lim = settings.limits;
+    var waitN = cards.filter(function(c){ return c.stage === "approve"; }).length;
+    var doneN = cards.filter(function(c){ return c.stage === "done"; }).length;
+    var total = Math.max(1, cards.length);
+    var scanPct = Math.round(Math.min(100, t.scan / Math.max(1, lim.scan) * 100));
+    var waitPct = Math.round(waitN / total * 100);
+    var donePct = Math.round(doneN / total * 100);
+    if($("pgScanBar")) $("pgScanBar").style.width = scanPct + "%";
+    if($("pgWaitBar")) $("pgWaitBar").style.width = waitPct + "%";
+    if($("pgDoneBar")) $("pgDoneBar").style.width = donePct + "%";
+    if($("pgScan")) $("pgScan").innerHTML = t.scan + "<i> / " + lim.scan + "</i>";
+    if($("pgWait")) $("pgWait").innerHTML = waitN + "<i>건</i>";
+    if($("pgDone")) $("pgDone").innerHTML = doneN + "<i>건</i>";
+    if($("progDate")){
+      var d = new Date();
+      $("progDate").textContent = (d.getMonth() + 1) + "/" + d.getDate();
+    }
+  }
+
+  function renderDexPreview(){
+    var el = $("dexRow");
+    if(!el) return;
+    var list = AIS.slice(0, 4);
+    el.innerHTML = list.map(function(a){
+      return '<button class="dex-mini" type="button" data-ai="' + esc(a.id) + '" aria-label="' + esc(a.name + " " + a.role) + ' 도감">' +
+        '<span class="dex-av"><span class="av ' + esc(a.av) + '" aria-hidden="true"></span>' +
+          '<i class="st-dot ' + statusClass(a.status) + '" aria-hidden="true"></i></span>' +
+        '<b>' + esc(a.name) + '</b><i>' + esc(a.role) + "</i></button>";
+    }).join("") +
+      (AIS.length > 4 ? '<button class="dex-mini" type="button" data-act="dex-all" aria-label="주민도감 전체 보기">' +
+        '<span class="dex-av"><span class="av" style="background:#FDF0F5;display:flex;align-items:center;justify-content:center;font-size:11px;color:#E85D88;font-weight:900">＋' + (AIS.length - 4) + "</span></span>" +
+        '<b>더보기</b><i>전체</i></button>' : "");
+  }
+
+  var STAGE_ORDER = { approve:0, run:1, review:2, draft:3, discover:4, done:5 };
+
+  function renderTaskCheck(){
+    var el = $("tcList");
+    var doingN = cards.filter(function(c){ return c.stage === "draft" || c.stage === "review" || c.stage === "run"; }).length;
+    var doneN = cards.filter(function(c){ return c.stage === "done"; }).length;
+    if($("tcAll")) $("tcAll").textContent = cards.length;
+    if($("tcDoing")) $("tcDoing").textContent = doingN;
+    if($("tcDone")) $("tcDone").textContent = doneN;
+    if(!el) return;
+    var list = cards.slice().sort(function(a, b){
+      var d = (STAGE_ORDER[a.stage] === undefined ? 9 : STAGE_ORDER[a.stage]) - (STAGE_ORDER[b.stage] === undefined ? 9 : STAGE_ORDER[b.stage]);
+      if(d) return d;
+      return String(a.due) < String(b.due) ? -1 : 1;
+    }).slice(0, 6);
+    if(!list.length){ el.innerHTML = '<div class="empty" style="font-size:9.5px;padding:8px">아직 작업이 없어요 ♡</div>'; return; }
+    el.innerHTML = list.map(function(c){
+      var st = stageOf(c.stage), ai = aiById(c.ai);
+      var mark = c.stage === "done" ? "✓" : (c.stage === "approve" ? "!" : (c.stage === "run" ? "▶" : "·"));
+      return '<button class="tc-item ' + esc(c.stage) + '" type="button" data-id="' + esc(c.id) + '" aria-label="' + esc(c.title) + ' 쪽지 열기">' +
+        '<span class="tc-mark" aria-hidden="true">' + mark + '</span>' +
+        '<span class="tc-tx"><b>' + esc(c.title) + '</b><i>' + esc(st.label) + " · " + esc(ai.name) + " · " + esc(c.due) + '</i></span>' +
+        '<span class="tc-go" aria-hidden="true">→</span></button>';
+    }).join("");
+  }
+
+  function toggleAllBubbles(){
+    var stage = $("roomStage"), btn = $("bubbleAllBtn");
+    if(!stage || !btn) return;
+    var on = !stage.classList.contains("show-all");
+    stage.classList.toggle("show-all", on);
+    btn.setAttribute("aria-pressed", String(on));
+    btn.innerHTML = on ? "💬 말풍선 접기" : "💬 말풍선 모두 보기";
+    for(var i=0;i<movers.length;i++){
+      var m = movers[i], b = m.el.querySelector(".bubble");
+      if(!b) continue;
+      if(on && !b.textContent){
+        var lines = (m.ai.lines && m.ai.lines.length) ? m.ai.lines : ["작업 중 ♡"];
+        b.textContent = lines[i % lines.length];
+      }
+      if(on) m.el.classList.add("talking");
+      else m.el.classList.remove("talking");
+    }
+  }
+
+  function viewDex(){
+    var rows = AIS.map(function(a){
+      var mine = cards.filter(function(c){ return c.ai === a.id; });
+      var wait = mine.filter(function(c){ return c.stage === "approve"; }).length;
+      var done = mine.filter(function(c){ return c.stage === "done"; }).length;
+      return '<article class="dexcard">' +
+        '<div class="dc-top">' +
+          '<div class="dc-sprite"><span class="sprite ' + esc(a.av) + '" aria-hidden="true"></span></div>' +
+          '<div class="dc-who"><h3>' + esc(a.name) +
+            '<span class="role" style="--tone:' + esc(a.tone || "#E85D88") + '">' + esc(a.role) + " · " + esc(roleTag(a)) + '</span></h3>' +
+            '<div class="dc-meta"><i class="st-dot ' + statusClass(a.status) + '" aria-hidden="true"></i><b>' + esc(a.status || "대기") + "</b>" +
+              " · " + esc(mbtiOf(a)) + " · 마지막 확인 " + esc(a.lastCheck || "-") + "</div>" +
+            '<p>' + esc(a.person || "사무실에서 열심히 일하는 중이에요.") + "</p>" +
+          "</div>" +
+        "</div>" +
+        '<div class="dc-kpi"><span>맡은 일감<b>' + mine.length + "</b></span><span>승인 대기<b>" + wait + "</b></span><span>완료<b>" + done + "</b></span></div>" +
+        '<div class="dc-foot"><span class="role-tag">' + esc(a.role) + " · " + esc(roleTag(a)) + "</span>" +
+          '<button class="btn btn-ghost btn-sm" type="button" data-act="open-ai" data-id="' + esc(a.id) + '">프로필 열기</button></div>' +
+      "</article>";
+    }).join("");
+    return '<div class="dex-wrap">' +
+      '<div class="dex-hero"><div><h2 id="drTitle">주민도감</h2>' +
+        '<p>사무실에서 함께 일하는 AI 팀원을 한눈에 봐요. 카드를 누르면 프로필로 이동합니다.</p></div>' +
+        '<span class="dh-n">' + AIS.length + "명</span></div>" +
+      '<div class="dr-body" style="padding:0"><div class="dex-grid">' + rows + "</div></div>" +
+      '<div class="dr-foot"><div class="dr-foot-row"><div class="foot-note">기본 4명과 내가 채용한 AI가 함께 보여요. 상태불빛은 자동응답 연결을 뜻해요.</div>' +
+        '<div class="foot-actions"><button class="btn btn-ghost" type="button" data-act="hire">＋ 새 AI 채용</button>' +
+        '<button class="btn btn-primary" type="button" data-act="close">닫기</button></div></div></div>' +
+    "</div>";
+  }
+
   function renderAll(){
     renderStats();
     renderTeam();
+    renderStatusChips();
+    renderTeamStrip();
+    renderMyRoom();
+    renderProgress();
+    renderDexPreview();
+    renderTaskCheck();
     renderBoard();
     renderStageTabs();
     renderNoti();
@@ -4853,6 +5442,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     renderHeader();
     updateLimitReset();
   }
+
 
   /* ============================================================
      이벤트
@@ -4927,6 +5517,69 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       var active = boardEl.querySelector(".col.is-active");
       if(active) active.scrollIntoView({ block:"nearest", behavior:"smooth" });
     });
+  }
+
+  function bindThreeCol(){
+    bindClick("chipConn", function(){
+      setView("bots");
+      showToast("연결된 AI <b>" + AIS.length + "명</b> — 봇에서 상태를 볼 수 있어요.");
+    });
+    bindClick("chipMsg", function(){ setView("chat"); });
+    bindClick("chipWait", function(){ setView("chat"); });
+    bindClick("chipRoom", function(){ setView("chat"); pickRoom(state.room); });
+
+    var strip = $("teamStrip");
+    if(strip) strip.addEventListener("click", function(e){
+      var b = e.target.closest("[data-ai]");
+      if(b){ openModal("ai", b.getAttribute("data-ai")); return; }
+      if(e.target.closest('[data-act="hire"]')) openModal("newai");
+    });
+
+    bindClick("mrRoomBtn", function(){
+      setView("chat");
+      pickRoom("cmd");
+    });
+    var note = $("bossNote");
+    if(note){
+      var saveNote = function(){
+        var v = note.value.slice(0, 60);
+        if(v === (settings.bossNote || "")) return;
+        settings.bossNote = v;
+        saveState();
+        showToast("한 줄 공지를 저장했어요 ♡");
+      };
+      note.addEventListener("change", saveNote);
+      note.addEventListener("blur", saveNote);
+      note.addEventListener("keydown", function(e){
+        if(e.key === "Enter"){ e.preventDefault(); note.blur(); }
+      });
+    }
+
+    bindClick("progMoreBtn", function(){ state.stage = "approve"; setView("dash"); });
+    bindClick("dexMore", function(){ openModal("dex"); });
+    var dexRow = $("dexRow");
+    if(dexRow) dexRow.addEventListener("click", function(e){
+      var b = e.target.closest("[data-ai]");
+      if(b){ openModal("ai", b.getAttribute("data-ai")); return; }
+      if(e.target.closest('[data-act="dex-all"]')) openModal("dex");
+    });
+    bindClick("taskAddBtn", function(){ openModal("newtask"); });
+    bindClick("tcBoardBtn", function(){ setView("dash"); });
+    var tc = $("tcList");
+    if(tc) tc.addEventListener("click", function(e){
+      var b = e.target.closest(".tc-item");
+      if(b) openModal("card", b.getAttribute("data-id"));
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll(".zone-bar [data-zone-go]"), function(b){
+      b.addEventListener("click", function(){
+        var z = b.getAttribute("data-zone-go");
+        if(z === "library"){ setView("library"); setLibTab("docs"); return; }
+        setView("chat");
+        pickRoom(z === "lounge" ? "lounge" : "cmd");
+      });
+    });
+    bindClick("bubbleAllBtn", toggleAllBubbles);
   }
 
   function bindLibrary(){
@@ -5213,6 +5866,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     var d = new Date();
     if($("syncClock")) $("syncClock").textContent = pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
     updateLimitReset();
+    renderStatusChips();
     var h = (d.getHours() % 12) * 30 + d.getMinutes() * 0.5;
     var m = d.getMinutes() * 6;
     var eh = $("clkH"), em = $("clkM");
@@ -5247,6 +5901,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   bindViewNav();
   bindHeader();
   bindOffice();
+  bindThreeCol();
   bindLibrary();
   bindChat();
   bindBots();
@@ -5267,6 +5922,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   setInterval(updateClock, 1000);
   requestAnimationFrame(tick);
 })();
+
 
 </script>
 </body>
