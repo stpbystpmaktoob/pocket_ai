@@ -2628,7 +2628,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   var notifications = DEMO_NOTES.map(clone);
   var settings = {
     theme:"light", snow:false, serverUrl:API_DEFAULT, apiKey:"",
-    serverOk:false, lastSync:"", mode:"local",
+    serverOk:false, lastSync:"", mode:"local", serverTp:null,
     limits:{ scan:30, draft:15, submit:10 }
   };
 
@@ -2735,6 +2735,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   }
   function mbtiOf(ai){ return ai.mbti || AI_MBTI[ai.id] || "AI"; }
   function totalCaps(){
+    if(serverReady() && settings.serverTp) return { scan:settings.serverTp.scan, draft:settings.serverTp.draft, submit:settings.serverTp.submit };
     var t = { scan:0, draft:0, submit:0 };
     AIS.forEach(function(a){
       if(!a.caps) return;
@@ -2835,7 +2836,11 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   }
 
   function renderBoard(){
-    boardEl.innerHTML = STAGES.map(function(s){
+    var demoBanner = serverReady() ? "" :
+      '<div class="demo-banner" role="status" style="margin:0 0 10px;padding:10px 12px;border:1px solid #E8B84B;background:#FFF6DB;color:#6B4E00;border-radius:12px;font-size:12px;line-height:1.6">' +
+      '<b>데모 모드</b> — 서버에 저장되지 않아요. 승인·보류는 서버 연결 뒤에만 돼요. ' +
+      '<button type="button" id="demoBannerBtn" style="margin-left:6px;padding:4px 10px;border-radius:999px;border:1px solid #6D57B0;background:#6D57B0;color:#fff;font-size:12px;cursor:pointer">서버 연결하기</button></div>';
+    boardEl.innerHTML = demoBanner + STAGES.map(function(s){
       var list = cards.filter(function(c){ return c.stage === s.id; });
       var note = laneNote(s.id, list);
       return '<section class="col' + (s.id === state.stage ? " is-active" : "") + '" data-stage="' + s.id + '" aria-label="' + s.label + '">' +
@@ -2845,6 +2850,8 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         (note ? '<div class="col-foot">' + note + "</div>" : "") +
       "</section>";
     }).join("");
+    var dbBtn = $("demoBannerBtn");
+    if(dbBtn) dbBtn.addEventListener("click", function(){ openModal("server"); });
     var waiting = cards.filter(function(c){ return c.stage === "approve"; }).length;
     if($("sbCounts")) $("sbCounts").textContent = "총 " + cards.length + "건 · 승인 대기 " + waiting + "건";
   }
@@ -3100,13 +3107,17 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
 
     var foot = "", note = "";
     if(c.stage === "approve"){
-      note = risk
+      var srvOK = serverReady();
+      canApprove = canApprove && srvOK;
+      note = !srvOK
+        ? "데모 모드예요. 승인·보류는 서버에 연결한 뒤에 할 수 있어요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러 주세요."
+        : risk
         ? (consentOK ? "확인 완료 · 승인하면 " + ACCOUNT.name + " 계정과 시각이 기록됩니다." : "확인 체크를 해야 승인할 수 있어요.")
         : "승인하면 " + ACCOUNT.name + " (" + ACCOUNT.handle + ") 계정과 시각이 기록되고, 실행 단계로 옮겨집니다.";
-      foot = '<div class="dr-foot-row"><div class="foot-note ' + (risk ? (consentOK ? "strong" : "warn") : "") + '">' + note + "</div>" +
+      foot = '<div class="dr-foot-row"><div class="foot-note ' + (!srvOK ? "warn" : risk ? (consentOK ? "strong" : "warn") : "") + '">' + note + "</div>" +
         '<div class="foot-actions">' +
-          '<button class="btn btn-ghost" type="button" data-act="hold-open">보류</button>' +
-          '<button class="btn btn-primary' + (canApprove ? "" : " is-off") + '" type="button" data-act="approve" id="approveBtn" aria-disabled="' + (!canApprove) + '">승인하고 실행으로</button>' +
+          '<button class="btn btn-ghost' + (srvOK ? "" : " is-off") + '" type="button" data-act="hold-open"' + (srvOK ? "" : " disabled") + '>보류</button>' +
+          '<button class="btn btn-primary' + (canApprove ? "" : " is-off") + '" type="button" data-act="approve" id="approveBtn" aria-disabled="' + (!canApprove) + '"' + (srvOK ? "" : " disabled") + '>승인하고 실행으로</button>' +
         "</div></div>";
     }else if(c.stage === "run"){
       foot = '<div class="dr-foot-row"><div class="foot-note strong">승인 완료 · 실행 단계에 있어요.</div>' +
@@ -3311,10 +3322,15 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
      동작: 승인 · 보류 · 완료 · 단계
      ============================================================ */
   function serverActive(){ return settings.mode === "api" && !!settings.apiKey; }
+  function serverReady(){ return settings.mode === "api" && !!settings.serverOk && !!settings.apiKey; }
 
   async function approveCard(){
     var c = cardById(state.modal && state.modal.id);
     if(!c || c.stage !== "approve") return;
+    if(!serverReady()){
+      showToast("지금은 <b>데모 모드</b>예요. 서버에 연결한 뒤에 승인해 주세요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러요.");
+      return;
+    }
     if(isRisk(c) && !cardConsentOK(c)){
       state.modal.shake = true;
       renderModal();
@@ -3354,6 +3370,10 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   async function saveHold(reason){
     var c = cardById(state.modal && state.modal.id);
     if(!c || c.stage !== "approve" || reason.length < 2) return;
+    if(!serverReady()){
+      showToast("지금은 <b>데모 모드</b>예요. 서버에 연결한 뒤에 보류해 주세요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러요.");
+      return;
+    }
     var by = ACCOUNT.name + " (" + ACCOUNT.handle + ")";
     var at = fmtNow();
     if(serverActive()){
@@ -3789,6 +3809,25 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     }
   }
 
+  async function apiReq(method, path, body){
+    var ctl = new AbortController();
+    var to = setTimeout(function(){ ctl.abort(); }, 9000);
+    try{
+      var opts = { method:method, headers:makeHeaders(), signal:ctl.signal };
+      if(body !== undefined) opts.body = JSON.stringify(body);
+      var res = await fetch(apiBase() + path, opts);
+      clearTimeout(to);
+      var data = null;
+      try{ data = await res.json(); }catch(e2){ data = null; }
+      return { ok:res.ok, status:res.status, data:data };
+    }catch(e){
+      clearTimeout(to);
+      return { ok:false, status:0, data:null, error:String(e && e.name || "network") };
+    }
+  }
+  async function apiPatch(path, body){ return apiReq("PATCH", path, body); }
+  async function apiDelete(path){ return apiReq("DELETE", path); }
+
   function normalizeApiCard(c){
     var name = String(c.assignee || "").split("(")[0];
     var aiId = API_AI_MAP[name] || API_AI_MAP[c.ai] || (c.ai && aiById(c.ai) ? c.ai : "jarvis");
@@ -3822,7 +3861,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         '<div class="fcol full"><label for="srvKey">API 키 · 세션 토큰</label>' +
           '<input class="field" id="srvKey" type="password" spellcheck="false" placeholder="서버에서 발급받은 토큰 (비워 두면 익명)" value="' + esc(settings.apiKey || "") + '"></div>' +
         '<div class="hintline">키는 이 브라우저(localStorage)에만 저장되고, 서버 요청의 <b>X-Session-Token</b> 헤더로만 나가요.</div>' +
-        '<div class="srv-hint">기본 주소는 뮤즈(자비스)가 만든 Worker예요. 연결에 실패하면 자동으로 데모 데이터로 돌아가고, 승인·보류는 이 브라우저에 기록됩니다. 서버가 CORS를 허용하지 않으면 브라우저에서 연결이 막힐 수 있어요.</div>' +
+        '<div class="srv-hint">기본 주소는 뮤즈(자비스)가 만든 Worker예요. 연결에 실패하면 데모 데이터로 돌아가고, 데모 모드에서는 승인·보류가 안 돼요. 서버에 연결되면 회의실·봇 상태·일정·메모도 함께 동기화돼요. 서버가 CORS를 허용하지 않으면 브라우저에서 연결이 막힐 수 있어요.</div>' +
       "</div>" +
       '<div class="srv-msg" id="srvMsg">연결 테스트를 눌러 상태를 확인해 보세요.</div>' +
       '<div class="dr-foot" style="margin-top:10px"><div class="dr-foot-row">' +
@@ -3862,6 +3901,8 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         " · 초안 " + (d.draft || 0) + " / " + lim.draft + " · 제출 " + (d.submit || 0) + " / " + lim.submit +
         "<br>‘카드 불러오기’를 누르면 서버의 일감으로 보드를 채워요.", "ok");
       settings.limits = { scan:Number(lim.scan) || 30, draft:Number(lim.draft) || 15, submit:Number(lim.submit) || 10 };
+      settings.serverTp = { scan:Number(d.scan) || 0, draft:Number(d.draft) || 0, submit:Number(d.submit) || 0 };
+      syncAllFromServer();
     }else if(res.status === 401){
       settings.serverOk = false;
       settings.mode = "api";
@@ -3895,7 +3936,15 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     if(res.ok && res.data && Array.isArray(res.data.cards)){
       var list = res.data.cards.map(normalizeApiCard);
       if(!list.length){
-        srvMsg("서버에 카드가 아직 없어요. 데모 카드를 그대로 두었습니다.", "");
+        cards = [];
+        settings.serverOk = true;
+        settings.mode = "api";
+        settings.lastSync = fmtNow();
+        saveState();
+        updateServerUI();
+        renderAll();
+        syncAllFromServer();
+        srvMsg("서버에 카드가 아직 없어요. 보드를 비워 두었어요. 데모 카드는 서버 카드가 아니에요.", "");
         return;
       }
       cards = list;
@@ -3905,6 +3954,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       saveState();
       updateServerUI();
       renderAll();
+      syncAllFromServer();
       srvMsg("<b>" + list.length + "건</b>을 불러왔어요. 대시보드에서 확인해 보세요.", "ok");
     }else if(res.status === 401){
       srvMsg("401 — API 키(세션 토큰)를 확인해 주세요.", "err");
@@ -3921,6 +3971,68 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     updateServerUI();
     renderHeader();
     srvMsg("로컬(데모) 모드로 바꿨어요. 승인·보류는 이 브라우저에 기록됩니다.", "ok");
+  }
+
+  /* ============================================================
+     v4 서버 동기화: 회의실 · 봇 · 일정 · 메모
+     ============================================================ */
+  async function syncChatFromServer(){
+    if(!serverReady()) return;
+    var res = await apiGet("/api/chat");
+    if(res.ok && res.data && Array.isArray(res.data.messages)){
+      chat = res.data.messages.map(function(m){
+        return { id:m.id, room:m.room, who:m.who, ts:m.ts, text:m.text, status:m.status || null, react:m.react || [], quote:m.quote || null, _srv:true };
+      });
+      renderChat();
+    }
+  }
+  async function syncBotsFromServer(){
+    if(!serverReady()) return;
+    var res = await apiGet("/api/bots");
+    if(res.ok && res.data && Array.isArray(res.data.bots)){
+      res.data.bots.forEach(function(sb){
+        var a = aiById(sb.id);
+        if(!a) return;
+        if(sb.status) a.status = sb.status;
+        if(typeof sb.autoReply === "boolean") a.autoReply = sb.autoReply;
+        if(sb.lastCheck) a.lastCheck = sb.lastCheck;
+        if(sb.caps) a.caps = sb.caps;
+      });
+      var first = res.data.bots[0];
+      if(first && first.caps){
+        settings.serverTp = { scan:first.caps.scan.v, draft:first.caps.draft.v, submit:first.caps.submit.v };
+        settings.limits = { scan:first.caps.scan.l, draft:first.caps.draft.l, submit:first.caps.submit.l };
+      }
+      renderBots(); renderLimits(); renderHeader();
+    }
+  }
+  async function syncEventsFromServer(){
+    if(!serverReady()) return;
+    var res = await apiGet("/api/events");
+    if(res.ok && res.data && Array.isArray(res.data.events)){
+      events = res.data.events.map(function(e){
+        return { id:e.id, date:e.date, time:e.time, title:e.title, type:e.type, _srv:true };
+      });
+      renderCalendar();
+    }
+  }
+  async function syncMemosFromServer(){
+    if(!serverReady()) return;
+    var res = await apiGet("/api/memos");
+    if(res.ok && res.data && Array.isArray(res.data.memos)){
+      memos = res.data.memos.map(function(m){
+        return { id:m.id, text:m.text, at:m.at, _srv:true };
+      });
+      renderMemos();
+    }
+  }
+  async function syncAllFromServer(){
+    if(!serverReady()) return;
+    await syncChatFromServer();
+    await syncBotsFromServer();
+    await syncEventsFromServer();
+    await syncMemosFromServer();
+    saveState();
   }
 
   /* ============================================================
@@ -4093,6 +4205,16 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     chat.push(m);
     state.quoting = null;
     inp.value = "";
+    if(serverReady()){
+      apiPost("/api/chat", { room:m.room, who:"me", text:text, quote:m.quote }).then(function(r){
+        if(r.ok && r.data && r.data.message){
+          for(var i=0;i<chat.length;i++){
+            if(chat[i].id === m.id){ chat[i].id = r.data.message.id; chat[i].ts = r.data.message.ts; chat[i]._srv = true; }
+          }
+          saveState();
+        }
+      });
+    }
     saveState();
     renderChat();
     updateQuoteChip();
@@ -4110,6 +4232,9 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   function botAck(m, targets){
     if(!chat.some(function(x){ return x.id === m.id; })) return;
     m.status = "확인됨";
+    if(serverReady() && m._srv){
+      apiPatch("/api/chat/" + encodeURIComponent(m.id), { status:"확인됨" });
+    }
     saveState();
     if(state.view === "chat") renderChat();
     setTimeout(function(){ botReply(m, targets); }, 900 + Math.random() * 700);
@@ -4122,16 +4247,32 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       var ai = aiById(id);
       if(!ai || !ai.autoReply) return;
       var ts = new Date(Date.now() + i * 1200).toISOString();
-      chat.push({
+      var rm = {
         id:"a" + Date.now() + "-" + i, room:m.room, who:ai.id,
         text:botLine(ai, m.text), ts:ts, status:null, react:[],
         quote:{ name:ACCOUNT.name, text:m.text.length > 30 ? m.text.slice(0, 30) + "…" : m.text }
-      });
+      };
+      chat.push(rm);
+      if(serverReady()){
+        (function(local){
+          apiPost("/api/chat", { room:local.room, who:local.who, text:local.text, quote:local.quote }).then(function(r){
+            if(r.ok && r.data && r.data.message){
+              for(var k=0;k<chat.length;k++){
+                if(chat[k].id === local.id){ chat[k].id = r.data.message.id; chat[k].ts = r.data.message.ts; chat[k]._srv = true; }
+              }
+              saveState();
+            }
+          });
+        })(rm);
+      }
       ai.lastCheck = nowHM();
       said.push(ai.name);
     });
     if(!said.length) return;
     m.status = "답장 완료";
+    if(serverReady() && m._srv){
+      apiPatch("/api/chat/" + encodeURIComponent(m.id), { status:"답장 완료" });
+    }
     if(state.view !== "chat" || state.room !== m.room){
       state.unread[m.room] = (state.unread[m.room] || 0) + said.length;
     }
@@ -4148,6 +4289,9 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     m.react = m.react || [];
     var at = m.react.indexOf("😊");
     if(at === -1) m.react.push("😊"); else m.react.splice(at, 1);
+    if(serverReady() && m._srv){
+      apiPatch("/api/chat/" + encodeURIComponent(m.id), { react:m.react });
+    }
     saveState(); renderChat();
   }
 
@@ -4167,6 +4311,11 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   }
 
   function delMsg(id){
+    var target = null;
+    for(var i=0;i<chat.length;i++){ if(chat[i].id === id) target = chat[i]; }
+    if(serverReady() && target && target._srv){
+      apiDelete("/api/chat/" + encodeURIComponent(id));
+    }
     var before = chat.length;
     chat = chat.filter(function(m){ return m.id !== id; });
     if(chat.length === before) return;
@@ -4228,6 +4377,9 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     var a = aiById(id);
     if(!a) return;
     a.status = status;
+    if(serverReady()){
+      apiPatch("/api/bots/" + encodeURIComponent(id), { status:status });
+    }
     saveState(); renderBots();
     reactTo(id, status === "작업중" ? "일하는 중!" : status === "대기" ? "대기 중~" : "잠깐 쉬는 중 ☕");
     showToast("<b>" + esc(a.name) + "</b> 상태를 <b>" + esc(status) + "</b>(으)로 바꿨어요.");
@@ -4237,6 +4389,9 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     var a = aiById(id);
     if(!a) return;
     a.autoReply = on;
+    if(serverReady()){
+      apiPatch("/api/bots/" + encodeURIComponent(id), { autoReply:on });
+    }
     saveState(); renderBots(); renderChat();
     showToast("<b>" + esc(a.name) + "</b> 자동응답을 " + (on ? "켰어요" : "껐어요") + ".");
   }
@@ -4245,6 +4400,9 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     var a = aiById(id);
     if(!a) return;
     a.lastCheck = nowHM();
+    if(serverReady()){
+      apiPatch("/api/bots/" + encodeURIComponent(id), { lastCheck:a.lastCheck });
+    }
     saveState(); renderBots(); renderChat();
     reactTo(id, "확인 완료!");
     showToast("<b>" + esc(a.name) + "</b> 확인 완료 · " + a.lastCheck);
@@ -4405,7 +4563,18 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     var date = val("evDate") || state.cal.day;
     var time = val("evTime") || "10:00";
     var type = (drawer.querySelector("#evType") || {}).value || "업무";
-    events.push({ id:"e" + Date.now(), date:date, time:time, title:title, type:type });
+    var ev = { id:"e" + Date.now(), date:date, time:time, title:title, type:type };
+    events.push(ev);
+    if(serverReady()){
+      apiPost("/api/events", { date:date, time:time, title:title, type:type }).then(function(r){
+        if(r.ok && r.data && r.data.event){
+          for(var i=0;i<events.length;i++){
+            if(events[i].id === ev.id){ events[i].id = r.data.event.id; events[i]._srv = true; }
+          }
+          saveState(); renderCalendar();
+        }
+      });
+    }
     state.cal.day = date;
     var d = new Date(date + "T00:00:00");
     state.cal.y = d.getFullYear(); state.cal.m = d.getMonth();
@@ -4414,6 +4583,11 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   }
 
   function delEvent(id){
+    var target = null;
+    for(var i=0;i<events.length;i++){ if(events[i].id === id) target = events[i]; }
+    if(serverReady() && target && target._srv){
+      apiDelete("/api/events/" + encodeURIComponent(id));
+    }
     events = events.filter(function(e){ return e.id !== id; });
     saveState(); renderCalendar();
     showToast("일정을 삭제했어요.");
@@ -4442,10 +4616,29 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     if(!text){ inp.focus(); showToast("메모 내용을 적어 주세요 ♡"); return; }
     var now = mmddText();
     if(state.memoEdit){
-      memos.forEach(function(m){ if(m.id === state.memoEdit){ m.text = text; m.at = now + " (수정)"; } });
+      var editId = state.memoEdit;
+      memos.forEach(function(m){ if(m.id === editId){ m.text = text; m.at = now + " (수정)"; } });
+      if(serverReady()){
+        var em = null;
+        for(var i=0;i<memos.length;i++){ if(memos[i].id === editId) em = memos[i]; }
+        if(em && em._srv){
+          apiPatch("/api/memos/" + encodeURIComponent(editId), { text:text });
+        }
+      }
       showToast("메모를 수정했어요.");
     }else{
-      memos.unshift({ id:"m" + Date.now(), text:text, at:now });
+      var nm = { id:"m" + Date.now(), text:text, at:now };
+      memos.unshift(nm);
+      if(serverReady()){
+        apiPost("/api/memos", { text:text }).then(function(r){
+          if(r.ok && r.data && r.data.memo){
+            for(var i=0;i<memos.length;i++){
+              if(memos[i].id === nm.id){ memos[i].id = r.data.memo.id; memos[i].at = r.data.memo.at; memos[i]._srv = true; }
+            }
+            saveState(); renderMemos();
+          }
+        });
+      }
       showToast("메모를 저장했어요 ♡");
     }
     state.memoEdit = null;
@@ -4481,6 +4674,11 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   }
 
   function deleteMemo(id){
+    var target = null;
+    for(var i=0;i<memos.length;i++){ if(memos[i].id === id) target = memos[i]; }
+    if(serverReady() && target && target._srv){
+      apiDelete("/api/memos/" + encodeURIComponent(id));
+    }
     memos = memos.filter(function(m){ return m.id !== id; });
     if(state.memoEdit === id) cancelMemoEdit();
     saveState(); renderMemos();
@@ -5013,6 +5211,12 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
   bindMemo();
   bindDrawer();
   bindGlobal();
+
+  if(settings.mode === "api" && settings.apiKey){
+    serverTest().then(function(){
+      if(settings.serverOk){ serverLoadCards(); }
+    });
+  }
 
   var startView = location.hash.replace("#", "");
   setView(VIEWS.indexOf(startView) !== -1 ? startView : "office", false);
