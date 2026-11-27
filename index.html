@@ -300,6 +300,10 @@ button{font-family:inherit}
   border-radius:999px;padding:1px 6px;
 }
 .board-head .hint{margin-left:auto;font-size:9.5px;color:var(--ink3)}
+.token-bar{display:none;gap:6px;align-items:center;background:#FFF8FB;border:1.5px dashed var(--line);border-radius:10px;padding:8px 10px;margin:8px 0 0}
+.token-bar.show{display:flex;flex-wrap:wrap}
+.token-bar label{font-size:10px;font-weight:900;color:var(--accent-d);white-space:nowrap}
+.token-bar input{flex:1;min-width:140px;font-family:inherit;font-size:11px;border:1.5px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;color:var(--ink)}
 .board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:8px}
 
 .col{
@@ -761,6 +765,11 @@ button{font-family:inherit}
           <span class="mini">6단계</span>
           <span class="hint" id="boardHint">카드를 누르면 쪽지가 열려요 ♡</span>
         </div>
+        <div class="token-bar" id="tokenBar">
+          <label for="tokenInput">세션 토큰</label>
+          <input type="password" id="tokenInput" placeholder="자비스가 보내준 토큰을 붙여넣어요" autocomplete="off" autocapitalize="off" spellcheck="false">
+          <button class="btn btn-primary btn-sm" type="button" id="tokenSave">저장</button>
+        </div>
         <section class="board" id="board" aria-label="작업 흐름 보드"></section>
       </div>
 
@@ -908,6 +917,8 @@ button{font-family:inherit}
   function setBoardHint(){
     var hint = $("boardHint");
     if (!hint) return;
+    var bar = $("tokenBar");
+    if (bar) bar.classList.toggle("show", apiError === "unauthorized");
     if (apiError === "unauthorized") hint.textContent = "서버에 연결됐어요. 세션 토큰이 없어 카드는 비어 있어요 ♡";
     else if (apiError) hint.textContent = "서버에서 카드를 불러오지 못했어요. 잠시 뒤 다시 열어주세요.";
     else hint.textContent = "카드를 누르면 쪽지가 열려요 ♡";
@@ -1384,6 +1395,19 @@ button{font-family:inherit}
   window.addEventListener("resize", function(){
     if (!isNarrow() && state.railOpen) closeRail();
   });
+
+  $("tokenSave").addEventListener("click", saveToken);
+  $("tokenInput").addEventListener("keydown", function(e){
+    if (e.key === "Enter"){ e.preventDefault(); saveToken(); }
+  });
+  function saveToken(){
+    var v = $("tokenInput").value.trim();
+    if (!v){ showToast("토큰을 먼저 붙여넣어 주세요."); return; }
+    try { sessionStorage.setItem("pocket_session", v); }
+    catch (e){ showToast("이 브라우저에 토큰을 저장할 수 없어요."); return; }
+    showToast("토큰을 저장했어요. 카드를 불러올게요 ♡");
+    loadCards();
+  }
 
   loadCards();
   updateClock();
