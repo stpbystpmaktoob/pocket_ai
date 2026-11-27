@@ -2340,7 +2340,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
      ============================================================ */
   var BASE_AIS = [
     {
-      id:"jarvis", name:"자비스", role:"관제", mbti:"INTJ", av:"jarvis", tone:"#6D57B0", mine:false, joined:"2026-10-28",
+      id:"jarvis", name:"자비스", role:"관제", mbti:"INTJ", base:"Muse", av:"jarvis", tone:"#6D57B0", mine:false, joined:"2026-10-28",
       person:"먼저 확인하고 마지막에 웃는 관제탑. 승인 없이는 아무것도 밖으로 보내지 않아요.",
       lines:["계약서 검토 중!","견적 금액 다시 확인!","출처 없는 숫자는 안 돼!","승인 로그 정리 중 ♡","회의는 3시에!"],
       home:{ x:20, y:14 }, desk:"업무 책상 A",
@@ -2348,7 +2348,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       caps:{ scan:{v:6,l:10}, draft:{v:3,l:5}, submit:{v:1,l:3} }
     },
     {
-      id:"selin", name:"셀린", role:"실행", mbti:"ENFP", av:"selin", tone:"#E85D88", mine:false, joined:"2026-10-28",
+      id:"selin", name:"셀린", role:"실행", mbti:"ENFP", base:"Pickle", av:"selin", tone:"#E85D88", mine:false, joined:"2026-10-28",
       person:"승인만 떨어지면 가장 먼저 달려가는 실행 담당. 초안은 제가 다 써요.",
       lines:["초안 작성 중~","커피 타임 ☕","설문 3건 신청 완료!","복붙 문구 준비 완료","바로 달려갈게!"],
       home:{ x:42, y:16 }, desk:"업무 책상 B",
@@ -2356,7 +2356,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       caps:{ scan:{v:5,l:8}, draft:{v:3,l:4}, submit:{v:2,l:3} }
     },
     {
-      id:"min", name:"민트", role:"자료", mbti:"ISFJ", av:"min", tone:"#4E9478", mine:false, joined:"2026-11-26",
+      id:"min", name:"민트", role:"자료", mbti:"ISFJ", base:"Cue", av:"min", tone:"#4E9478", mine:false, joined:"2026-11-26",
       person:"자료실 지킴이. 스크랩·출처·체크리스트를 차곡차곡 쌓는 걸 좋아해요.",
       lines:["자료실 정리 중 ♡","출처 링크 확인!","새 자료 6건 등록!","체크리스트 봐 주세요~","책장 정리 완료!"],
       home:{ x:84, y:17 }, desk:"자료실 책장",
@@ -2364,7 +2364,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       caps:{ scan:{v:4,l:7}, draft:{v:2,l:3}, submit:{v:1,l:2} }
     },
     {
-      id:"cora", name:"코랄", role:"디자인", mbti:"ENTP", av:"cora", tone:"#E0742F", mine:false, joined:"2026-11-26",
+      id:"cora", name:"코랄", role:"디자인", mbti:"ENTP", base:"Claude Code", av:"cora", tone:"#E0742F", mine:false, joined:"2026-11-26",
       person:"색을 고르는 데 진심인 디자이너. 3D 요소 18종을 만든 장본인이에요.",
       lines:["3D 요소 만드는 중!","색감 다시 볼게요~","썸네일 3안 준비!","미리캔버스 업로드!","이 색 어때요?"],
       home:{ x:64, y:13 }, desk:"업무 책상 B",
@@ -3245,21 +3245,21 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         : "승인하면 " + ACCOUNT.name + " (" + ACCOUNT.handle + ") 계정과 시각이 기록되고, 실행 단계로 옮겨집니다.";
       foot = '<div class="dr-foot-row"><div class="foot-note ' + (!srvOK ? "warn" : risk ? (consentOK ? "strong" : "warn") : "") + '">' + note + "</div>" +
         '<div class="foot-actions">' +
-          '<button class="btn btn-ghost' + (srvOK ? "" : " is-off") + '" type="button" data-act="hold-open"' + (srvOK ? "" : " disabled") + '>보류</button>' +
-          '<button class="btn btn-primary' + (canApprove ? "" : " is-off") + '" type="button" data-act="approve" id="approveBtn" aria-disabled="' + (!canApprove) + '"' + (srvOK ? "" : " disabled") + '>승인하고 실행으로</button>' +
+          '<button class="btn btn-ghost' + (srvOK ? "" : " is-off") + '" type="button" data-act="hold-open">보류</button>' +
+          '<button class="btn btn-primary' + (canApprove ? "" : " is-off") + '" type="button" data-act="approve" id="approveBtn" aria-disabled="' + (!canApprove) + '">승인하고 실행으로</button>' +
         "</div></div>";
     }else if(c.stage === "run"){
       var srvOKRun = serverReady();
       foot = '<div class="dr-foot-row"><div class="foot-note ' + (srvOKRun ? "strong" : "warn") + '">' + (srvOKRun ? "승인 완료 · 실행 단계에 있어요." : "데모 모드예요. 완료 처리는 서버에 연결한 뒤에 할 수 있어요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러 주세요.") + '</div>' +
-        '<div class="foot-actions"><button class="btn btn-primary' + (srvOKRun ? "" : " is-off") + '" type="button" data-act="complete"' + (srvOKRun ? "" : " disabled") + '>실행 완료로</button>' +
+        '<div class="foot-actions"><button class="btn btn-primary' + (srvOKRun ? "" : " is-off") + '" type="button" data-act="complete">실행 완료로</button>' +
         '<button class="btn btn-ghost" type="button" data-act="close">닫기</button></div></div>';
     }else if(c.stage === "done"){
       foot = '<div class="dr-foot-row"><div class="foot-note strong">완료된 작업이에요 ♡</div>' +
         '<div class="foot-actions"><button class="btn btn-ghost" type="button" data-act="close">닫기</button></div></div>';
     }else{
       var srvOKStage = serverReady();
-      var prevBtn = idx > 0 ? '<button class="btn btn-ghost btn-sm' + (srvOKStage ? "" : " is-off") + '" type="button" data-act="prev-stage"' + (srvOKStage ? "" : " disabled") + '>◀ 이전 단계</button>' : "";
-      var nextBtn = idx < 2 ? '<button class="btn btn-ghost btn-sm' + (srvOKStage ? "" : " is-off") + '" type="button" data-act="next-stage"' + (srvOKStage ? "" : " disabled") + '>다음 단계 ▶</button>' : "";
+      var prevBtn = idx > 0 ? '<button class="btn btn-ghost btn-sm' + (srvOKStage ? "" : " is-off") + '" type="button" data-act="prev-stage">◀ 이전 단계</button>' : "";
+      var nextBtn = idx < 2 ? '<button class="btn btn-ghost btn-sm' + (srvOKStage ? "" : " is-off") + '" type="button" data-act="next-stage">다음 단계 ▶</button>' : "";
       foot = '<div class="dr-foot-row"><div class="foot-note' + (srvOKStage ? "" : " warn") + '">' + (srvOKStage ? st.label + " 단계예요. 승인 대기 단계에서만 승인할 수 있어요." : "데모 모드예요. 단계 이동은 서버에 연결한 뒤에 할 수 있어요. 설정(서버 연결)에서 토큰을 넣고 '연결 테스트'를 눌러 주세요.") + '</div>' +
         '<div class="foot-actions">' + prevBtn + nextBtn +
         '<button class="btn btn-ghost btn-sm" type="button" data-act="close">닫기</button></div></div>';
@@ -3297,13 +3297,14 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         '<div class="who"><h2 id="drTitle">' + esc(ai.name) + '<span class="role" style="--tone:' + esc(ai.tone || "#E85D88") + '">' + esc(ai.role) + "</span></h2>" +
           '<p class="person">' + esc(ai.person || "사무실에서 열심히 일하는 중이에요.") + "</p>" +
           '<div class="chipsline"><span>MBTI <b>' + esc(mbtiOf(ai)) + "</b></span><span>·</span><span>상태 <b>" + esc(ai.status || "대기") + "</b></span><span>·</span><span>마지막 확인 <b>" + esc(ai.lastCheck || "-") + "</b></span><span>·</span>" +
-            '<span>자리 <b>' + esc(ai.desk || "사무실") + "</b></span><span>·</span><span>" + (ai.mine ? "내가 채용한 AI" : "기본 팀원") + "</span></div>" +
+            '<span>자리 <b>' + esc(ai.desk || "사무실") + "</b></span><span>·</span>" + (ai.base ? '<span>토대 AI <b>' + esc(ai.base) + "</b></span><span>·</span>" : "") + '<span>' + (ai.mine ? "내가 채용한 AI" : "기본 팀원") + "</span></div>" +
         "</div></div>" +
       '<div class="ai-kpi">' +
         "<div><span>맡은 일감</span><b>" + mine.length + "<i>건</i></b></div>" +
         "<div><span>승인 대기</span><b>" + wait + "<i>건</i></b></div>" +
         "<div><span>완료</span><b>" + done + "<i>건</i></b></div>" +
       "</div>" +
+      '<div class="hintline">토대 AI는 이 캐릭터가 본뜬 실제 AI예요. 지금 회의실 답변은 공용 AI 모델이 각 캐릭터의 말투와 역할로 답해요.</div>' +
       '<div class="dr-body" style="padding-top:12px">' +
         '<section class="sec" style="border-top:0;padding-top:0"><div class="sec-h"><h3>지금 맡은 일감</h3><span class="sec-sub">누르면 쪽지가 열려요</span></div>' +
         '<div class="task-list">' + list + "</div></section>" +
@@ -3545,6 +3546,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         var why = "";
         if(r.status === 401) why = "세션 토큰이 없어 서버에 저장하지 못했어요.";
         else if(r.status === 400) why = "서버가 이 단계 이동을 허용하지 않았어요.";
+        else if(r.status === 404) why = "서버에 이 카드가 없어요. 새로고침한 뒤 다시 시도해 주세요.";
         showToast("<b>서버에 저장하지 못했어요.</b> — 완료 단계로 옮기지 않았어요." + (why ? "<br>" + why : ""));
         return;
       }
@@ -3582,6 +3584,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         if(r.status === 400 && r.data && r.data.error === "invalid_transition") why = "서버는 단계를 앞으로만 옮길 수 있어요.";
         else if(r.status === 400 && r.data && r.data.error === "use_approve_endpoint") why = "승인 대기 단계는 승인 버튼으로만 넘어가요.";
         else if(r.status === 401) why = "세션 토큰이 없어 서버에 저장하지 못했어요.";
+        else if(r.status === 404) why = "서버에 이 카드가 없어요. 새로고침한 뒤 다시 시도해 주세요.";
         showToast("<b>서버에 저장하지 못했어요.</b> — 단계는 그대로예요." + (why ? "<br>" + why : ""));
         return;
       }
@@ -3625,19 +3628,39 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     showToast("<b>" + esc(name) + "</b> 님이 출근했어요 ♡ 사무실에서 만나 보세요.");
   }
 
-  function saveNewTask(){
+  async function saveNewTask(){
     var title = val("ntTitle");
     if(!title){ toastFocus("ntTitle", "일감 제목을 적어 주세요 ♡"); return; }
     var aiId = (drawer.querySelector("#ntAi") || {}).value || AIS[0].id;
-    cards.push({
-      id:nextCardId(), stage:(drawer.querySelector("#ntStage") || {}).value || "discover",
+    var stage = (drawer.querySelector("#ntStage") || {}).value || "discover";
+    if(stage !== "discover" && stage !== "draft") stage = "discover";
+    var card = {
+      id:nextCardId(), stage:stage,
       title:title, tag:(drawer.querySelector("#ntType") || {}).value || "일반",
       ai:aiId, due:val("ntDue") || "미정", dueState:"normal",
       draftMeta:aiById(aiId).name + " · " + nowHM(), draft:val("ntDraft") || "아직 초안이 없어요. 담당 AI가 첫 초안을 작성하면 여기에 표시됩니다.",
       memo:null
-    });
+    };
+    if(serverReady()){
+      var r = await apiPost("/api/cards", { id:card.id, title:card.title, tag:card.tag, ai:card.ai, due:card.due, draft:card.draft, stage:card.stage });
+      if(r.ok && r.data && r.data.card){
+        card = normalizeApiCard(r.data.card);
+        card._srv = true;
+        cards.push(card);
+        saveState(); renderAll(); closeModal();
+        showToast("<b>새 일감</b>을 서버에 올렸어요. 담당 AI가 사무실에서 반응해요 ♡");
+        reactTo(aiId, "새 일감 확인!");
+        return;
+      }
+      cards.push(card);
+      saveState(); renderAll(); closeModal();
+      showToast("<b>새 일감</b>은 이 브라우저에만 저장됐어요. 서버에 올리지 못했어요. 연결을 확인한 뒤 '카드 불러오기'를 눌러 주세요.");
+      reactTo(aiId, "새 일감 확인!");
+      return;
+    }
+    cards.push(card);
     saveState(); renderAll(); closeModal();
-    showToast("<b>새 일감</b>을 등록했어요. 담당 AI가 사무실에서 반응해요 ♡");
+    showToast("<b>새 일감</b>을 등록했어요. 데모 모드라 이 브라우저에만 저장돼요.");
     reactTo(aiId, "새 일감 확인!");
   }
 
@@ -4123,14 +4146,41 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     srvMsg("저장했어요. 이 브라우저에 주소와 키를 기억합니다. <b>연결 테스트</b>로 확인해 보세요.", "ok");
   }
 
+  // 폰에만 있던 일감(로컬 카드)을 서버로 올리기 — 서버 목록에 없는 id만, 데모 카드는 제외
+  function localPendingCards(){
+    var demoIds = {};
+    DEMO_CARDS.forEach(function(c){ demoIds[c.id] = true; });
+    return cards.filter(function(c){ return c && !c.trashed && !demoIds[c.id]; });
+  }
+  async function migrateLocalCards(serverList){
+    if(!serverReady()) return 0;
+    var serverIds = {};
+    serverList.forEach(function(c){ serverIds[c.id] = true; });
+    var n = 0;
+    var pending = localPendingCards();
+    for(var i = 0; i < pending.length; i++){
+      var c = pending[i];
+      if(serverIds[c.id]) continue;
+      var r = await apiPost("/api/cards", { id:c.id, title:c.title, tag:c.tag || "일반", ai:c.ai, due:c.due || "", draft:c.draft || "", stage:(c.stage === "draft" ? "draft" : "discover") });
+      if(r.ok && r.data && r.data.card){ n++; }
+      else if(r.status === 429){ break; }
+    }
+    if(n > 0) showToast("<b>폰에만 있던 일감 " + n + "개</b>를 서버에 올렸어요 ♡");
+    return n;
+  }
   async function serverLoadCards(){
     readServerFields();
     srvMsg("서버에서 카드를 불러오는 중…");
     var res = await apiGet("/api/cards");
     if(res.ok && res.data && Array.isArray(res.data.cards)){
       var list = res.data.cards.map(normalizeApiCard);
+      var migrated = await migrateLocalCards(list);
+      if(migrated > 0){
+        var res2 = await apiGet("/api/cards");
+        if(res2.ok && res2.data && Array.isArray(res2.data.cards)) list = res2.data.cards.map(normalizeApiCard);
+      }
       if(!list.length){
-        cards = [];
+        cards = localPendingCards();
         settings.serverOk = true;
         settings.mode = "api";
         settings.lastSync = fmtNow();
@@ -4138,7 +4188,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         updateServerUI();
         renderAll();
         syncAllFromServer();
-        srvMsg("서버에 카드가 아직 없어요. 보드를 비워 두었어요. 데모 카드는 서버 카드가 아니에요.", "");
+        srvMsg(cards.length ? "서버에 카드가 아직 없어요. 서버에 올리지 못한 일감 " + cards.length + "개는 보드에 그대로 두었어요." : "서버에 카드가 아직 없어요. 보드를 비워 두었어요. 데모 카드는 서버 카드가 아니에요.", "");
         return;
       }
       cards = list;
@@ -4191,6 +4241,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
         if(typeof sb.autoReply === "boolean") a.autoReply = sb.autoReply;
         if(sb.lastCheck) a.lastCheck = sb.lastCheck;
         if(sb.caps) a.caps = sb.caps;
+        if(sb.base) a.base = sb.base;
       });
       var first = res.data.bots[0];
       if(first && first.caps){
@@ -4295,6 +4346,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
             '<button type="button" data-act="react" data-id="' + esc(m.id) + '" aria-label="리액션" title="리액션">😊+</button>' +
             '<button type="button" data-act="quote" data-id="' + esc(m.id) + '" aria-label="인용 답장" title="인용 답장">↩️</button>' +
             '<button type="button" data-act="del" data-id="' + esc(m.id) + '" aria-label="삭제" title="삭제">×</button>' +
+            (mine ? '<button type="button" data-act="msg-task" data-id="' + esc(m.id) + '" aria-label="일감으로 등록" title="일감으로 등록">📋</button>' : "") +
           "</span>" +
         "</div>" +
         '<div class="msg-bubble">' + quote + esc(m.text) + "</div>" +
@@ -4339,7 +4391,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       aisle.innerHTML = AIS.map(function(a){
         var on = a.autoReply;
         return '<div class="side-ai"><span class="av ' + esc(a.av) + '" aria-hidden="true"></span>' +
-          "<div><b>" + esc(a.name) + '</b><div class="sr">' + esc(mbtiOf(a)) + " · " + esc(a.role) + "</div></div>" +
+          "<div><b>" + esc(a.name) + '</b><div class="sr">' + esc(mbtiOf(a)) + " · " + esc(a.role) + (a.base ? " · 토대 " + esc(a.base) : "") + "</div></div>" +
           '<span class="sd' + (on ? "" : " off") + '">' + (on ? "자동응답 ON" : "OFF") + "</span></div>";
       }).join("");
     }
@@ -4406,6 +4458,8 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
           for(var i=0;i<chat.length;i++){
             if(chat[i].id === m.id){ chat[i].id = r.data.message.id; chat[i].ts = r.data.message.ts; chat[i]._srv = true; }
           }
+          // 답장이 먼저 끝나 있으면 서버에도 "답장 완료"로 바로 반영 (상태가 "전송됨"에 머무는 문제 수정)
+          if(m.status === "답장 완료"){ apiPatch("/api/chat/" + encodeURIComponent(r.data.message.id), { status:"답장 완료" }); }
           saveState();
         }
       });
@@ -4473,7 +4527,21 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       postReply(ai, i, botLine(ai, m.text));
       return Promise.resolve(null);
     });
-    Promise.all(jobs).then(function(){ finishBotReply(m, said); });
+    Promise.all(jobs).then(function(){
+      if(!said.length && targets.length){
+        var ai0 = aiById(targets[0]);
+        if(ai0) postReply(ai0, 0, "지금 답을 만들지 못했어요. 다시 한 번 말씀해 주세요.");
+      }
+      finishBotReply(m, said);
+    }).catch(function(){
+      try{
+        if(!said.length && targets.length){
+          var ai1 = aiById(targets[0]);
+          if(ai1) postReply(ai1, 0, "지금 답을 만들지 못했어요. 다시 한 번 말씀해 주세요.");
+        }
+      }catch(e){}
+      finishBotReply(m, said);
+    });
   }
 
   function finishBotReply(m, said){
@@ -4532,6 +4600,18 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
     showToast("메시지를 삭제했어요.");
   }
 
+  function msgToTask(id){
+    var m = null;
+    for(var i=0;i<chat.length;i++){ if(chat[i].id === id) m = chat[i]; }
+    if(!m) return;
+    openModal("newtask");
+    var t = drawer.querySelector("#ntTitle");
+    if(t) t.value = String(m.text || "").slice(0, 40);
+    var d = drawer.querySelector("#ntDraft");
+    if(d) d.value = String(m.text || "");
+    showToast("채팅 내용을 일감으로 옮겼어요. 제목·담당을 확인하고 등록해 주세요.");
+  }
+
   function pickRoom(room){
     state.room = room;
     state.unread[room] = 0;
@@ -4566,6 +4646,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
             "<h3>" + esc(a.name) + '<span class="role" style="background:' + esc(a.tone || "#E85D88") + '">' + esc(mbtiOf(a)) + " · " + esc(a.role) + "</span></h3>" +
             '<div class="meta"><span class="st-dot ' + statusClass(a.status) + '"></span><b>' + esc(a.status) + "</b>" +
               "<span>·</span><span>마지막 확인 <b>" + esc(a.lastCheck || "-") + "</b></span>" +
+              (a.base ? "<span>·</span><span>토대 AI <b>" + esc(a.base) + "</b></span>" : "") +
               (a.mine ? '<span class="tagc done" style="font-size:8px">내가 채용</span>' : "") +
             "</div>" +
           "</div>" +
@@ -5141,6 +5222,7 @@ html[data-theme="dark"] .folio .shot .cat{background:#2F2436;border-color:#4A355
       if(act === "react") reactMsg(b.getAttribute("data-id"));
       else if(act === "quote") quoteMsg(b.getAttribute("data-id"));
       else if(act === "del") delMsg(b.getAttribute("data-id"));
+      else if(act === "msg-task") msgToTask(b.getAttribute("data-id"));
     });
     var plus = $("mentionBtn"), pop = $("mentionPop");
     if(plus && pop){
